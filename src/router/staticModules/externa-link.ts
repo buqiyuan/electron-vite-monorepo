@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'http://buqiyuan.gitee.io/vite-vue3-lowcode/',
     component: RouterView,
     meta: {
-      title: 'H5低代码平台',
+      title: 'H5 low-code',
       icon: 'icon-externa-link',
     },
   },

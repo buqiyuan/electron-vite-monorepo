@@ -10,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
     component: RouterView,
     redirect: '/account/settings',
     meta: {
-      title: '个人中心',
+      title: 'Personal Center',
       hideInMenu: true,
     },
     children: [
