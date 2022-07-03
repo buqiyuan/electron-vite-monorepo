@@ -158,7 +158,7 @@ const routes: Array<RouteRecordRaw> = [
             path: 'lol/:id',
             name: `${moduleName}-table-lol-info`,
             meta: {
-              title: '英雄详情',
+              title: 'Hero Details',
               icon: 'icon-zhuomian',
               hideInMenu: true,
               keepAlive: true,
@@ -187,7 +187,7 @@ const routes: Array<RouteRecordRaw> = [
         name: `${moduleName}-nested-routes`,
         redirect: { name: `${moduleName}-nested-routes-one` },
         meta: {
-          title: '嵌套路由',
+          title: 'Nested Routing',
           icon: 'icon-zhuomian',
           keepAlive: true,
           hideChildrenInMenu: true,
@@ -200,7 +200,7 @@ const routes: Array<RouteRecordRaw> = [
             path: 'route-one',
             name: `${moduleName}-nested-routes-one`,
             meta: {
-              title: '路由一',
+              title: 'Route One',
               icon: 'icon-zhuomian',
               hideInMenu: true,
               activeMenu: `${moduleName}-nested-routes`,
@@ -211,7 +211,7 @@ const routes: Array<RouteRecordRaw> = [
             path: 'route-two',
             name: `${moduleName}-nested-routes-two`,
             meta: {
-              title: '路由二',
+              title: 'Route 2',
               icon: 'icon-zhuomian',
               hideInMenu: true,
               activeMenu: `${moduleName}-nested-routes`,
@@ -222,7 +222,7 @@ const routes: Array<RouteRecordRaw> = [
             path: 'route-three',
             name: `${moduleName}-nested-routes-three`,
             meta: {
-              title: '路由三',
+              title: 'route three',
               icon: 'icon-zhuomian',
               hideInMenu: true,
               activeMenu: `${moduleName}-nested-routes`,

@@ -115,5 +115,8 @@
   "i18n-ally.enabledParsers": ["ts"],
   "i18n-ally.sourceLanguage": "en-US",
   "i18n-ally.displayLanguage": "en-US",
-  "i18n-ally.enabledFrameworks": ["vue", "react"]
+  "i18n-ally.enabledFrameworks": ["vue", "react"],
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

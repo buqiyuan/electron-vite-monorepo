@@ -1,29 +1,29 @@
 # vite-vue3-admin
 
-> 基于 vite2.x 重构整个前后端项目，完善后端权限控制细粒度，封装更多场景化组件...正在完善中
+> Reconstructing the entire front-end and back-end projects based on vite2.x, improving the fine-grained control of back-end permissions, and encapsulating more scene-based components... in progress
 
-基于 vite2.x + vue3.x + antd-design-vue3.x + typescript4.x 的后台管理系统模板
+Background management system template based on vite2.x + vue3.x + antd-design-vue3.x + typescript4.x
 
-- 账号：rootadmin，密码：123456
-- 在线预览（ [gitee](http://buqiyuan.gitee.io/vite-vue3-admin/) / [vercel](https://vite-vue3-admin.vercel.app/) ）
-- [swagger 文档](https://nest-api.buqiyuan.site/api/swagger-api/static/index.html#/)
-- [后台地址](https://github.com/buqiyuan/nest-admin)
-- [react 版 coding](https://github.com/buqiyuan/react-antd-admin)
+- Account: rootadmin, password: 123456
+- Online preview ( [gitee](http://buqiyuan.gitee.io/vite-vue3-admin/) / [vercel](https://vite-vue3-admin.vercel.app/) )
+- [swagger documentation](https://nest-api.buqiyuan.site/api/swagger-api/static/index.html#/)
+- [Background address](https://github.com/buqiyuan/nest-admin)
+- [react version coding](https://github.com/buqiyuan/react-antd-admin)
 - [vue-cli](https://github.com/buqiyuan/vite-vue3-admin)
-- [gitee 地址](https://gitee.com/buqiyuan/vite-vue3-admin)
-- 根据 JSON 生成 typescript 的工具：[http://json2ts.com/](http://json2ts.com/)
+- [gitee address](https://gitee.com/buqiyuan/vite-vue3-admin)
+- A tool to generate typescript from JSON: [http://json2ts.com/](http://json2ts.com/)
 
-部分设计参考了 [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
+Some designs refer to [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
 
-## 安装使用
+## Install and use
 
-- 获取项目代码
+- Get project code
 
 ```bash
 git clone https://github.com/buqiyuan/vite-vue3-admin
 ```
 
-- 安装依赖
+- install dependencies
 
 ```bash
 cd vite-vue3-admin
@@ -32,69 +32,69 @@ pnpm install
 
 ```
 
-- 运行
+- run
 
 ```bash
 pnpm serve
 ```
 
-- 打包
+- Bale
 
 ```bash
 pnpm build
 ```
 
-## vscode 配置
+##vscode configuration
 
-安装项目根目录.vscode 推荐的插件，再安装 Volar，并禁用 Vetur，重启 vscode 即可。
+Install the plugin recommended by .vscode in the project root directory, then install Volar, disable Vetur, and restart vscode.
 
-> 使用了 Vue3.x 全家桶、ant-design-vue3.x 和 typescript4.x，实践 vue3.x 的新特性以及玩法，不得不说 vue3.x 的 Composition API 相比于 vue2.x 的 Options API 灵活很多，让我们可以灵活地组合组件逻辑，我们可以很轻松的使用 hooks 的形式去代替以前 mixins 等的写法。更多 hooks 可以参考[vueuse](https://vueuse.org/functions.html)
+> Using Vue3.x family bucket, ant-design-vue3.x and typescript4.x to practice the new features and gameplay of vue3.x, I have to say that the Composition API of vue3.x is more flexible than the Options API of vue2.x Many, allowing us to flexibly combine component logic, we can easily use the form of hooks to replace the previous writing methods such as mixins. For more hooks, please refer to [vueuse](https://vueuse.org/functions.html)
 
-## 项目简要说明
+## Project brief description
 
-`rootadmin` 默认开放多点登录，其他新建的账号默认都是单点登录。建议自己拉后端代码到本地跑，避免多人同时操作时产生冲突和误解。
+`rootadmin` enables multi-sign-on by default, and other newly created accounts are single-sign-on by default. It is recommended to pull the back-end code to run locally to avoid conflicts and misunderstandings when multiple people operate at the same time.
 
 ### todolist
 
-- [x] 动态表格(完善中)
-- [x] 动态表单(完善中)
-- [ ] 电商 SKU 功能演示
-- [ ] 纯前端导出 PDF 动态分页
-- [ ] 其他...
+- [x] Dynamic form (in progress)
+- [x] Dynamic form (in progress)
+- [ ] E-commerce SKU function demo
+- [ ] Pure front-end export PDF dynamic pagination
+- [ ] other...
 
-## Git 贡献提交规范
+## Git contribution commit specification
 
-- 参考 [vue](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md) 规范 ([Angular](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular))
+- Refer to [vue](https://github.com/vuejs/vue/blob/dev/.github/COMMIT_CONVENTION.md) specification([Angular](https://github.com/conventional-changelog/conventional-changelog /tree/master/packages/conventional-changelog-angular))
 
-  - `feat` 增加新功能
-  - `fix` 修复问题/BUG
-  - `style` 代码风格相关无影响运行结果的
-  - `perf` 优化/性能提升
-  - `refactor` 重构
-  - `revert` 撤销修改
-  - `test` 测试相关
-  - `docs` 文档/注释
-  - `chore` 依赖更新/脚手架配置修改等
-  - `workflow` 工作流改进
-  - `ci` 持续集成
-  - `types` 类型定义文件更改
-  - `wip` 开发中
+  - `feat` adds new features
+  - `fix` fixes issues/bugs
+  - `style` code style has no effect on the running result
+  - `perf` optimizations/performance improvements
+  - `refactor` refactoring
+  - `revert` to undo changes
+  - `test` test related
+  - `docs` documentation/comments
+  - `chore` dependency update/scaffold configuration modification etc.
+  - `workflow` workflow improvements
+  - `ci` continuous integration
+  - `types` type definition file changes
+  - `wip` in development
 
-### QQ 交流群（2022-3-8）
+### QQ exchange group (2022-3-8)
 
-[![加入QQ群](https://img.shields.io/badge/570108996-blue.svg)](https://qm.qq.com/cgi-bin/qm/qr?k=ID-KcAOdPUPWVgAnsPLF3gRdHLc8GURO&jump_from=webapi)
+[![Join QQ group](https://img.shields.io/badge/570108996-blue.svg)](https://qm.qq.com/cgi-bin/qm/qr?k=ID- KcAOdPUPWVgAnsPLF3gRdHLc8GURO&jump_from=webapi)
 
 <div><img src="https://cdn.jsdelivr.net/gh/buqiyuan/MyImageHosting/imgs/vue3-antdv-admin/qq_group.jpg" height="280" /></div>
 
-## 赞赏
+## Appreciate
 
-如果你觉得这个项目对你有帮助，你可以帮作者买一杯咖啡表示支持!
+If you find this project helpful, you can buy the author a cup of coffee to show your support!
 
-| 微信 | 支付宝 |
+| WeChat | Alipay |
 | :-: | :-: |
-| <img src="https://cdn.jsdelivr.net/gh/buqiyuan/MyImageHosting/imgs/vue3-antdv-admin/weixin.jpg" height="220" /> | <img src="https://cdn.jsdelivr.net/gh/buqiyuan/MyImageHosting/imgs/vue3-antdv-admin/zhifubao.jpg" height="220" /> |
+| <img src="https://cdn.jsdelivr.net/gh/buqiyuan/MyImageHosting/imgs/vue3-antdv-admin/weixin.jpg" height="220" /> | <img src="https:/ /cdn.jsdelivr.net/gh/buqiyuan/MyImageHosting/imgs/vue3-antdv-admin/zhifubao.jpg" height="220" /> |
 
-## 感谢 JetBrains 免费的开源授权
+## Thanks to JetBrains for free open source license
 
 <a href="https://www.jetbrains.com/?from=Mybatis-PageHelper" target="_blank">
 <img src="https://user-images.githubusercontent.com/1787798/69898077-4f4e3d00-138f-11ea-81f9-96fb7c49da89.png" height="200"/></a>
