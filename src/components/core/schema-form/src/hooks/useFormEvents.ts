@@ -127,7 +127,7 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
   /**
    * @description: 根据 field 删除 Schema
    */
-  async function removeSchemaByFiled(fields: string | string[]): Promise<void> {
+  async function removeSchemaByField(fields: string | string[]): Promise<void> {
     const schemaList = cloneDeep<FormSchema[]>(unref(formSchemasRef));
 
     if (!fields) {
@@ -243,7 +243,7 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
     updateSchema,
     resetSchema,
     appendSchemaByField,
-    removeSchemaByFiled,
+    removeSchemaByField,
     resetFields,
     setFieldsValue,
     scrollToField,
