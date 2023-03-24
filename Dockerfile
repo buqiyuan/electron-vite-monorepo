@@ -1,6 +1,6 @@
 FROM node:lts-alpine as builder
 
-ENV PROJECT_DIR=/vite-vue3-admin
+ENV PROJECT_DIR=/vite-vue3-admin/
 
 WORKDIR $PROJECT_DIR
 
@@ -8,7 +8,7 @@ WORKDIR $PROJECT_DIR
 RUN npm install -g pnpm
 
 # 安装依赖
-COPY package.json $PROJECT_DIR
+COPY package.json pnpm-lock.yaml $PROJECT_DIR
 # 若网络不通，可以使用淘宝源
 RUN pnpm config set registry https://registry.npmmirror.com
 RUN pnpm install
