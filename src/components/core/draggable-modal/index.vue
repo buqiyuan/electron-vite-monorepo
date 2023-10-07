@@ -2,8 +2,8 @@
   <teleport :to="getContainer()">
     <div ref="modalWrapRef" class="draggable-modal" :class="{ fullscreen: fullscreenModel }">
       <Modal
-        v-bind="omit(props, ['visible', 'onCancel', 'onOk', 'onUpdate:visible'])"
-        v-model:visible="visibleModel"
+        v-bind="omit(props, ['open', 'onCancel', 'onOk', 'onUpdate:open'])"
+        v-model:open="visibleModel"
         :mask-closable="false"
         :get-container="() => modalWrapRef"
         :width="innerWidth || width"
@@ -16,9 +16,9 @@
         <template #closeIcon>
           <slot name="closeIcon">
             <Space class="ant-modal-operate" @click.stop>
-              <fullscreen-outlined v-if="!fullscreenModel" @click="fullscreenModel = true" />
-              <fullscreen-exit-outlined v-else @click="restore" />
-              <close-outlined @click="closeModal" />
+              <FullscreenOutlined v-if="!fullscreenModel" @click="fullscreenModel = true" />
+              <FullscreenExitOutlined v-else @click="restore" />
+              <CloseOutlined @click="closeModal" />
             </Space>
           </slot>
         </template>
@@ -57,10 +57,10 @@
     },
   });
 
-  const emit = defineEmits(['update:visible', 'update:fullscreen', 'ok', 'cancel']);
+  const emit = defineEmits(['update:open', 'update:fullscreen', 'ok', 'cancel']);
 
   const route = useRoute();
-  const visibleModel = useVModel(props, 'visible');
+  const visibleModel = useVModel(props, 'open');
   const fullscreenModel = ref(props.fullscreen);
   const innerWidth = ref('');
 
@@ -285,13 +285,10 @@
   .draggable-modal {
     &.fullscreen {
       .ant-modal {
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        left: 0 !important;
+        inset: 0 !important;
         width: 100% !important;
-        height: 100% !important;
         max-width: 100vw !important;
+        height: 100% !important;
       }
 
       .ant-modal-content {
@@ -302,22 +299,28 @@
 
     .ant-modal {
       position: fixed;
-      padding: 0;
-      min-height: 200px;
       min-width: 200px;
+      min-height: 200px;
+      padding: 0;
+
+      .ant-modal-header {
+        user-select: none;
+      }
 
       .ant-modal-close {
         top: 6px;
-        right: 6px;
+        right: 30px;
+        background-color: transparent;
+        cursor: inherit;
 
         &:hover,
         &:focus {
-          color: rgba(0, 0, 0, 0.45);
+          color: rgb(0 0 0 / 45%);
         }
 
         .ant-space-item:hover .anticon,
         .ant-space-item:focus .anticon {
-          color: rgba(0, 0, 0, 0.75);
+          color: rgb(0 0 0 / 75%);
           text-decoration: none;
         }
 
@@ -338,15 +341,15 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+        min-width: 200px;
         height: 100%;
         min-height: 200px;
-        min-width: 200px;
         overflow: hidden;
 
         .ant-modal-body {
           flex: auto;
-          overflow: auto;
           height: 100%;
+          overflow: auto;
         }
       }
     }

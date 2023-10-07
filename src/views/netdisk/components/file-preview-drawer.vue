@@ -1,5 +1,5 @@
 <template>
-  <Drawer title="文件详情" :width="500" :visible="visible" @close="handleClose">
+  <Drawer title="文件详情" :width="500" :open="visible" @close="handleClose">
     <Spin :spinning="loading" class="preview-drawer-inner-box">
       <Space direction="vertical">
         <Image

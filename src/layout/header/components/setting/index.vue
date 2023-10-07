@@ -1,6 +1,6 @@
 <template>
   <SettingOutlined @click="showDrawer" />
-  <Drawer v-model:visible="visible" placement="right" :closable="false">
+  <Drawer v-model:open="visible" placement="right" :closable="false">
     <Descriptions title="整体风格" :column="5">
       <Descriptions.Item v-for="theme in themeStyle" :key="theme.value">
         <Tooltip :title="theme.label">
@@ -71,7 +71,7 @@
   const customColor = ref(themeStore.primaryColor);
   const visible = ref(false);
 
-  const colorPickerStyle = computed(() => ({ '--custom-color': customColor.value } as StyleValue));
+  const colorPickerStyle = computed(() => ({ '--custom-color': customColor.value }) as StyleValue);
 
   const setNavTheme = (theme: ThemeName) => {
     themeStore.setTheme({ navTheme: theme });
@@ -101,11 +101,11 @@
     position: relative;
     cursor: pointer;
 
-    &.active:after {
+    &.active::after {
       content: '✔';
       position: absolute;
-      bottom: 10px;
       right: 12px;
+      bottom: 10px;
       color: @primary-color;
     }
   }
@@ -113,10 +113,10 @@
   input[type='color'] {
     width: 40px;
     height: 40px;
-    border: 0;
     padding: 0;
+    border: 0;
     outline: none;
-    -webkit-appearance: none;
+    appearance: none;
 
     &::-webkit-color-swatch-wrapper {
       background: var(--custom-color);
