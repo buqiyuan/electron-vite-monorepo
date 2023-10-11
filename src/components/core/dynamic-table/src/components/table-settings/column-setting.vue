@@ -105,6 +105,7 @@
 
   // 初始化选中状态
   const initCheckStatus = () => {
+    // @ts-ignore
     tableColumns.value = cloneDeep(defaultColumns);
     checkIndex.value = defaultShowIndex;
     checkBordered.value = defaultBordered;

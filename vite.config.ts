@@ -81,16 +81,28 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           `,
       }),
       Components({
+        dts: 'types/components.d.ts',
+        types: [
+          {
+            from: './src/components/basic/button/',
+            names: ['AButton'],
+          },
+          {
+            from: 'vue-router',
+            names: ['RouterLink', 'RouterView'],
+          },
+        ],
         resolvers: [
           AntDesignVueResolver({
             importStyle: false, // css in js
+            exclude: ['Button'],
           }),
         ],
       }),
       // https://github.com/fi3ework/vite-plugin-checker
       checker({
         typescript: true,
-        // vueTsc: true,
+        vueTsc: true,
         eslint: {
           lintCommand: 'eslint "./src/**/*.{.vue,ts,tsx}"', // for example, lint .ts & .tsx
         },
