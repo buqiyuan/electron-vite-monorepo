@@ -1,8 +1,9 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "noLib": false,
     "forceConsistentCasingInFileNames": true,
@@ -10,18 +11,18 @@
     "strictFunctionTypes": false,
     "jsx": "preserve",
     "baseUrl": ".",
+    // fix i18-ally 没有找到文案文件。
+    "preserveValueImports": false,
     "allowJs": true,
     "sourceMap": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "experimentalDecorators": true,
     "lib": ["dom", "esnext"],
     "noImplicitAny": false,
     "skipLibCheck": true,
     "removeComments": true,
-    "types": ["node", "vite/client", "unplugin-vue-define-options"],
+    "types": ["node", "vite/client", "unplugin-vue-define-options/macros-global"],
     "paths": {
       "@/*": ["src/*"]
     }

@@ -1,6 +1,8 @@
-import type { CSSProperties } from 'vue';
+import type { CSSProperties, WatchOptions } from 'vue';
 import type {
   InputNumberProps,
+  InputProps,
+  SliderProps,
   SelectProps,
   CascaderProps,
   SwitchProps,
@@ -10,6 +12,10 @@ import type {
   TreeProps,
   TreeSelectProps,
   RadioGroupProps,
+  RadioProps,
+  UploadProps,
+  DatePickerProps,
+  CheckboxProps,
 } from 'ant-design-vue';
 import type { RenderCallbackParams } from './form';
 
@@ -17,8 +23,21 @@ export type { ComponentMapType } from '../componentMap';
 
 type ColSpanType = number | string;
 
+/** 组件异步请求配置 */
+type RequestConfig =
+  | PromiseFn<RenderCallbackParams, any>
+  | {
+      /** 指定监听的字段名, 当该字段值发生变化时会调用 callback */
+      watchFields: string[];
+      callback: PromiseFn<RenderCallbackParams, any>;
+      options?: WatchOptions;
+      /** debounce 请求防抖 */
+      wait?: number;
+    };
+
 /** 组件属性 */
 export type ComponentProps = (
+  | InputProps
   | InputNumberProps
   | SelectProps
   | CascaderProps
@@ -29,9 +48,14 @@ export type ComponentProps = (
   | TreeProps
   | TreeSelectProps
   | RadioGroupProps
+  | RadioProps
+  | UploadProps
+  | DatePickerProps
+  | CheckboxProps
+  | SliderProps
 ) & {
   /** 组件异步请求数据 */
-  request?: PromiseFn<RenderCallbackParams, any>;
+  request?: RequestConfig;
   /** 组件异步请求数据结果 */
   requestResult?: any;
   style?: CSSProperties;

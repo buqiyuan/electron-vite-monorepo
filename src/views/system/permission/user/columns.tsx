@@ -10,7 +10,7 @@ export const baseColumns: TableColumnItem[] = [
     width: 80,
     dataIndex: 'headImg',
     hideInSearch: true,
-    bodyCell: ({ record }) => <Avatar src={record.headImg} />,
+    customRender: ({ record }) => <Avatar src={record.headImg} />,
   },
   {
     title: '姓名',
@@ -37,10 +37,9 @@ export const baseColumns: TableColumnItem[] = [
     align: 'center',
     hideInSearch: true,
     width: 220,
-    //or bodyCell
-    customRender: ({ text }) => (
+    customRender: ({ record }) => (
       <Space>
-        {text.map((item) => (
+        {record.roleNames.map((item) => (
           <Tag color={'success'} key={item}>
             {item}
           </Tag>
@@ -52,6 +51,7 @@ export const baseColumns: TableColumnItem[] = [
     title: '呢称',
     width: 120,
     align: 'center',
+    hideInSearch: true,
     dataIndex: 'nickName',
   },
   {
@@ -76,6 +76,7 @@ export const baseColumns: TableColumnItem[] = [
     title: '状态',
     dataIndex: 'status',
     width: 100,
+    hideInSearch: true,
     formItemProps: {
       component: 'Select',
       componentProps: {
@@ -91,7 +92,7 @@ export const baseColumns: TableColumnItem[] = [
         ],
       },
     },
-    bodyCell: ({ record }) => {
+    customRender: ({ record }) => {
       const isEnable = record.status === 1;
       return <Tag color={isEnable ? 'success' : 'red'}>{isEnable ? '启用' : '禁用'}</Tag>;
     },
@@ -100,6 +101,7 @@ export const baseColumns: TableColumnItem[] = [
     title: '创建时间',
     dataIndex: 'createdAt',
     width: 120,
+    hideInSearch: true,
     formItemProps: {
       component: 'DatePicker',
       componentProps: {
@@ -111,6 +113,7 @@ export const baseColumns: TableColumnItem[] = [
     title: '修改时间',
     dataIndex: 'updatedAt',
     width: 120,
+    hideInSearch: true,
     formItemProps: {
       component: 'DatePicker',
       componentProps: {

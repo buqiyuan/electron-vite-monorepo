@@ -1,9 +1,15 @@
 <template>
-  <DynamicTable header-title="登录日志" :data-request="loadTableData" :columns="columns" />
+  <DynamicTable
+    header-title="登录日志"
+    auto-height
+    :data-request="loadTableData"
+    :columns="columns"
+  />
 </template>
 
 <script setup lang="ts">
-  import { useTable, LoadDataParams, TableColumn } from '@/components/core/dynamic-table';
+  import type { LoadDataParams, TableColumn } from '@/components/core/dynamic-table';
+  import { useTable } from '@/components/core/dynamic-table';
   import { getLoginLogList } from '@/api/system/log';
 
   defineOptions({
@@ -28,6 +34,11 @@
       title: '登录IP',
       dataIndex: 'ip',
       width: 150,
+      align: 'center',
+    },
+    {
+      title: '登录地点',
+      dataIndex: 'loginLocation',
       align: 'center',
     },
     {

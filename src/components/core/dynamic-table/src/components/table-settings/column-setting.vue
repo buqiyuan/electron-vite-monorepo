@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, ref, unref, watchEffect } from 'vue';
+  import { computed, nextTick, ref, unref, watch } from 'vue';
   import {
     SettingOutlined,
     VerticalRightOutlined,
@@ -125,9 +125,15 @@
     );
   });
 
-  watchEffect(() => {
-    table.setProps({ columns: tableColumns.value });
-  });
+  watch(
+    tableColumns,
+    (columns) => {
+      table.setProps({ columns });
+    },
+    {
+      deep: true,
+    },
+  );
   // 设置序号列
   const handleIndexCheckChange = (e) => {
     table.setProps({ showIndex: e.target.checked });
@@ -137,7 +143,7 @@
     table.setProps({ bordered: e.target.checked });
   };
 
-  const handleColumnFixed = (columItem: TableColumn<any>, direction: 'left' | 'right') => {
+  const handleColumnFixed = (columItem: TableColumn, direction: 'left' | 'right') => {
     columItem.fixed = columItem.fixed === direction ? false : direction;
   };
 
@@ -175,6 +181,7 @@
   .check-item {
     @apply flex justify-between;
   }
+
   .column-fixed {
     .fixed-right,
     .fixed-left {

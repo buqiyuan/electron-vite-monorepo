@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { loadEnv } from 'vite';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import legacy from '@vitejs/plugin-legacy';
@@ -83,14 +83,38 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           `,
       }),
       // https://github.com/antfu/unplugin-vue-components
-      Components({
-        resolvers: [
-          AntDesignVueResolver({
-            exclude: ['AButton'],
-          }),
-        ],
-        // directoryAsNamespace: true,
-      }),
+      //让 unplugin-vue-components 只有在生产环境生效
+      {
+        ...Components({
+          resolvers: [AntDesignVueResolver()],
+        }),
+        apply: 'build',
+      },
+      // 开发环境动态加入ui库框架引入
+      {
+        name: 'dev-auto-import-antdv',
+        transform(code, id) {
+          if (/src\/main.ts$/.test(id)) {
+            const result = code.split('\n');
+            const script = `
+              import * as components from 'ant-design-vue/es/components';
+              const filters = ['AButton'];
+              Object.entries(components).forEach(([key, comp]) => {
+                if (comp.install && !filters.includes(comp.name)) {
+                  app.use(comp);
+                }
+              });
+            `;
+            // 解决首次加载isCustomElement的问题
+            result.splice(result.length - 2, 0, script);
+            return {
+              code: result.join('\n'),
+              map: null,
+            };
+          }
+        },
+        apply: 'serve',
+      },
       // https://github.com/fi3ework/vite-plugin-checker
       checker({
         typescript: true,
@@ -120,7 +144,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     },
     server: {
       host: '0.0.0.0',
-      // https: true,
       port: 8088,
       proxy: {
         '/api': {
@@ -138,7 +161,13 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
     },
     optimizeDeps: {
-      include: ['lodash-es', 'ant-design-vue/es/locale/zh_CN', 'ant-design-vue/es/locale/en_US'],
+      include: [
+        '@vue/runtime-core',
+        '@vue/shared',
+        'lodash-es',
+        'ant-design-vue/es/locale/zh_CN',
+        'ant-design-vue/es/locale/en_US',
+      ],
     },
     esbuild: {
       pure: VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : [],
@@ -148,7 +177,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
     },
     build: {
-      target: 'es2015',
+      target: 'es2017',
       minify: 'esbuild',
       cssTarget: 'chrome79',
       chunkSizeWarningLimit: 2000,

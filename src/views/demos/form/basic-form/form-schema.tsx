@@ -1,6 +1,8 @@
-import { Radio } from 'ant-design-vue';
+import { UploadOutlined } from '@ant-design/icons-vue';
+import { Radio, Button } from 'ant-design-vue';
 import type { FormSchema } from '@/components/core/schema-form';
 import { optionsListApi } from '@/api/demos/select';
+import { waitTime } from '@/utils/common';
 
 const provincesOptions = [
   {
@@ -54,6 +56,7 @@ const citiesOptionsData = {
 };
 
 const fetchOptionList = async () => {
+  await waitTime(3000);
   const data = await optionsListApi();
   return data.list.map((item) => ({
     label: item.name,
@@ -281,7 +284,7 @@ export const schemas: FormSchema[] = [
     colProps: {
       span: 8,
     },
-    defaultValue: 1,
+    defaultValue: '1',
   },
   {
     field: 'field31',
@@ -348,7 +351,7 @@ export const schemas: FormSchema[] = [
         return data;
       },
     },
-    defaultValue: '1',
+    defaultValue: '0',
     colProps: {
       span: 8,
     },
@@ -489,6 +492,24 @@ export const schemas: FormSchema[] = [
     componentProps: {
       disabled: false,
       allowHalf: true,
+    },
+  },
+  {
+    field: 'field23',
+    component: 'Upload',
+    label: '字段23',
+    colProps: {
+      span: 8,
+    },
+    componentProps: {
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    },
+    componentSlots: {
+      default: () => (
+        <Button>
+          <UploadOutlined /> Click to Upload
+        </Button>
+      ),
     },
   },
 ];

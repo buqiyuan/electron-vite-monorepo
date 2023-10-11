@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="tsx">
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, onMounted } from 'vue';
   import {
     SyncOutlined,
     PlusOutlined,
@@ -97,6 +97,7 @@
   import { userSchemas, deptSchemas, updatePswSchemas, transferUserSchemas } from './formSchemas';
   import { baseColumns, type TableListItem, type TableColumnItem } from './columns';
   import type { LoadDataParams } from '@/components/core/dynamic-table';
+  import type { TreeDataItem } from '@/core/permission/utils';
   import { SplitPanel } from '@/components/basic/split-panel';
   import { useTable } from '@/components/core/dynamic-table';
   import {
@@ -109,7 +110,7 @@
   } from '@/api/system/user';
   import { createDept, deleteDept, updateDept, getDeptList, transferDept } from '@/api/system/dept';
   import { useFormModal } from '@/hooks/useModal/index';
-  import { TreeDataItem, formatDept2Tree, findChildById } from '@/core/permission/utils';
+  import { formatDept2Tree, findChildById } from '@/core/permission/utils';
 
   defineOptions({
     name: 'SystemUser',
@@ -121,7 +122,7 @@
     deptTree: TreeDataItem[];
   }
 
-  const [DynamicTable, dynamicTableInstance] = useTable();
+  const [DynamicTable, dynamicTableInstance] = useTable({ formProps: { autoSubmitOnEnter: true } });
   const [showModal] = useFormModal();
 
   const deptListLoading = ref(false);
@@ -235,6 +236,7 @@
       formProps: {
         labelWidth: 100,
         schemas: userSchemas,
+        autoSubmitOnEnter: true,
       },
     });
 
@@ -256,6 +258,9 @@
     }
   };
 
+  /**
+   * 打开更新用户密码弹窗
+   */
   const openUpdatePasswordModal = async (record: TableListItem) => {
     await showModal({
       modalProps: {
@@ -296,7 +301,7 @@
     state.deptTree = formatDept2Tree(dept);
     state.expandedKeys = [...state.expandedKeys, ...state.deptTree.map((n) => Number(n.key))];
   };
-  fetchDeptList();
+
   /**
    * @description 表格删除行
    */
@@ -324,10 +329,9 @@
     dynamicTableInstance?.reload?.();
   };
 
-  const loadTableData = async ({ page, limit }: LoadDataParams) => {
+  const loadTableData = async (params: LoadDataParams) => {
     const data = await getUserListPage({
-      page,
-      limit,
+      ...params,
       departmentIds: state.departmentIds.length ? state.departmentIds : undefined,
     });
     rowSelection.value.selectedRowKeys = [];
@@ -339,7 +343,7 @@
     {
       title: '操作',
       width: 230,
-      dataIndex: '$action',
+      dataIndex: 'ACTION',
       align: 'center',
       fixed: 'right',
       actions: ({ record }) => [
@@ -367,6 +371,10 @@
       ],
     },
   ];
+
+  onMounted(() => {
+    fetchDeptList();
+  });
 </script>
 
 <style></style>
