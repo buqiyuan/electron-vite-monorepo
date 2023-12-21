@@ -5,7 +5,7 @@
         <a
           class="text-blue-500"
           target="_blank"
-          href="https://github.com/buqiyuan/vue3-antd-admin/blob/main/src/views/demos/form/basic-form/index.vue"
+          href="https://github.com/buqiyuan/vite-vue3-admin/blob/main/src/views/demos/form/basic-form/index.vue"
         >
           查看源码
         </a>
@@ -85,7 +85,7 @@
   const valueSelectA = ref<string[]>([]);
   const valueSelectB = ref<string[]>([]);
   const options = ref<Recordable[]>([]);
-  for (let i = 1; i < 10; i++) options.value.push({ label: `选项${i}`, value: `${i}` });
+  options.value = Array.from({ length: 10 }).map((_, i) => ({ label: `选项${i}`, value: `${i}` }));
 
   const optionsA = computed(() => {
     return cloneDeep(unref(options)).map((op) => {

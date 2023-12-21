@@ -27,3 +27,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# auto generate file
+types/auto-imports.d.ts
+types/components.d.ts

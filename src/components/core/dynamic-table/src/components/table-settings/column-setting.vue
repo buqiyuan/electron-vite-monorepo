@@ -7,7 +7,7 @@
       placement="bottomLeft"
       trigger="click"
       overlay-class-name="cloumn-list"
-      @visible-change="handleVisibleChange"
+      @open-change="handleVisibleChange"
     >
       <template #title>
         <div class="popover-title">
@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, ref, unref, watchEffect } from 'vue';
+  import { computed, nextTick, ref, unref, watch } from 'vue';
   import {
     SettingOutlined,
     VerticalRightOutlined,
@@ -83,17 +83,12 @@
   import { useSortable } from '@/hooks/useSortable';
   import { isNullAndUnDef } from '@/utils/is';
 
-  type TableColumnType<T = any> = TableColumn<T> & {
-    /** 目的是解决：类型实例化过深，且可能无限 */
-    formItemProps?: any;
-  };
-
   const table = useTableContext();
   let inited = false;
-  const defaultColumns = cloneDeep<TableColumnType[]>(table.columns);
+  const defaultColumns = cloneDeep<TableColumn[]>(table.columns);
   const defaultShowIndex = !!table.showIndex;
   const defaultBordered = table.bordered;
-  const tableColumns = ref<TableColumnType[]>([]);
+  const tableColumns = ref<TableColumn[]>([]);
 
   const checkAll = computed<boolean>({
     get() {
@@ -110,6 +105,7 @@
 
   // 初始化选中状态
   const initCheckStatus = () => {
+    // @ts-ignore
     tableColumns.value = cloneDeep(defaultColumns);
     checkIndex.value = defaultShowIndex;
     checkBordered.value = defaultBordered;
@@ -125,9 +121,15 @@
     );
   });
 
-  watchEffect(() => {
-    table.setProps({ columns: tableColumns.value });
-  });
+  watch(
+    tableColumns,
+    (columns) => {
+      table.setProps({ columns });
+    },
+    {
+      deep: true,
+    },
+  );
   // 设置序号列
   const handleIndexCheckChange = (e) => {
     table.setProps({ showIndex: e.target.checked });
@@ -137,7 +139,7 @@
     table.setProps({ bordered: e.target.checked });
   };
 
-  const handleColumnFixed = (columItem: TableColumn<any>, direction: 'left' | 'right') => {
+  const handleColumnFixed = (columItem: TableColumn, direction: 'left' | 'right') => {
     columItem.fixed = columItem.fixed === direction ? false : direction;
   };
 
@@ -175,6 +177,7 @@
   .check-item {
     @apply flex justify-between;
   }
+
   .column-fixed {
     .fixed-right,
     .fixed-left {

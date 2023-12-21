@@ -1,16 +1,15 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { loadEnv } from 'vite';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import legacy from '@vitejs/plugin-legacy';
 import vue from '@vitejs/plugin-vue';
 import checker from 'vite-plugin-checker';
 import { viteMockServe } from 'vite-plugin-mock';
-import styleImport from 'vite-plugin-style-import';
-// import Components from 'unplugin-vue-components/vite';
-import WindiCSS from 'vite-plugin-windicss';
+import Components from 'unplugin-vue-components/vite';
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
+import Unocss from 'unocss/vite';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import dayjs from 'dayjs';
-import DefineOptions from 'unplugin-vue-define-options/vite';
 import pkg from './package.json';
 import type { UserConfig, ConfigEnv } from 'vite';
 
@@ -41,10 +40,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     resolve: {
       alias: [
         {
-          find: 'vue-i18n',
-          replacement: 'vue-i18n/dist/vue-i18n.cjs.js',
-        },
-        {
           find: '@',
           replacement: resolve(__dirname, './src'),
         },
@@ -52,14 +47,16 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     },
     plugins: [
       vue(),
-      WindiCSS(),
-      DefineOptions(), // https://github.com/sxzz/unplugin-vue-define-options
+      Unocss(),
       vueJsx({
         // options are passed on to @vue/babel-plugin-jsx
       }),
 
       legacy({
-        targets: ['defaults', 'not IE 11'],
+        targets: ['defaults', 'not IE 11', 'chrome 79', 'maintained node versions'],
+        additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+        // 根据你自己需要导入相应的polyfill:  https://github.com/vitejs/vite/tree/main/packages/plugin-legacy#polyfill-specifiers
+        modernPolyfills: ['es.promise.finally', 'es/array', 'es/map', 'es/set'],
       }),
       createSvgIconsPlugin({
         // Specify the icon folder to be cached
@@ -75,33 +72,33 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         logger: true,
         injectCode: `
           import { setupProdMockServer } from '../mock/_createProductionServer';
-    
+
           setupProdMockServer();
           `,
       }),
-      // Components({
-      //   resolvers: [
-      //     AntDesignVueResolver({
-      //       exclude: ['AButton'],
-      //     }),
-      //   ],
-      //   directoryAsNamespace: true,
-      // }),
-      styleImport({
-        libs: [
+      Components({
+        dts: 'types/components.d.ts',
+        types: [
           {
-            libraryName: 'ant-design-vue',
-            esModule: true,
-            resolveStyle: (name) => {
-              return `ant-design-vue/es/${name}/style/index`;
-            },
+            from: './src/components/basic/button/',
+            names: ['AButton'],
           },
+          {
+            from: 'vue-router',
+            names: ['RouterLink', 'RouterView'],
+          },
+        ],
+        resolvers: [
+          AntDesignVueResolver({
+            importStyle: false, // css in js
+            exclude: ['Button'],
+          }),
         ],
       }),
       // https://github.com/fi3ework/vite-plugin-checker
       checker({
         typescript: true,
-        // vueTsc: true,
+        vueTsc: true,
         eslint: {
           lintCommand: 'eslint "./src/**/*.{.vue,ts,tsx}"', // for example, lint .ts & .tsx
         },
@@ -113,8 +110,8 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           javascriptEnabled: true,
           modifyVars: {},
           additionalData: `
-            @import "ant-design-vue/lib/style/themes/default.less";
-            @import "@/styles/variables.less";
+            @primary-color: #00b96b; 
+            @header-height: 60px; 
           `,
         },
         // scss: {
@@ -127,7 +124,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     },
     server: {
       host: '0.0.0.0',
-      // https: true,
       port: 8088,
       proxy: {
         '/api': {
@@ -145,19 +141,26 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
     },
     optimizeDeps: {
-      include: ['lodash-es', 'ant-design-vue/es/locale/zh_CN', 'ant-design-vue/es/locale/en_US'],
+      include: [
+        '@vue/runtime-core',
+        '@vue/shared',
+        'lodash-es',
+        'ant-design-vue/es/locale/zh_CN',
+        'ant-design-vue/es/locale/en_US',
+      ],
     },
     esbuild: {
       pure: VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : [],
+      supported: {
+        // https://github.com/vitejs/vite/pull/8665
+        'top-level-await': true,
+      },
     },
     build: {
-      target: 'es2015',
+      target: 'es2017',
+      minify: 'esbuild',
       cssTarget: 'chrome79',
-      brotliSize: false,
       chunkSizeWarningLimit: 2000,
-      // rollupOptions: {
-      //   experimentalTopLevelAwait: true,
-      // },
     },
   };
 };

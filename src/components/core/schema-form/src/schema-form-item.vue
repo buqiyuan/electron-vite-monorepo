@@ -1,13 +1,13 @@
 <template>
   <Col v-if="getShow.isIfShow" v-show="getShow.isShow" v-bind="schema.colProps">
-    <Divider v-if="schema.component === 'Divider'" v-bind="getComponentProps">
+    <Divider v-if="schema.component === 'Divider'" v-bind="Object.assign(getComponentProps)">
       <component :is="renderLabelHelpMessage"></component>
     </Divider>
     <Form.Item
       v-else
       v-bind="{ ...schema.formItemProps }"
       :label="renderLabelHelpMessage"
-      :name="schema.field"
+      :name="namePath"
       :label-col="itemLabelWidthProp.labelCol"
       :wrapper-col="itemLabelWidthProp.wrapperCol"
       :rules="getRules"
@@ -16,12 +16,12 @@
       <component
         :is="getComponent"
         v-else-if="getComponent"
-        :ref="setItemRef"
-        :key="schema.field"
+        :ref="setItemRef(schema.field)"
         v-bind="getComponentProps"
-        v-model:[modelValueType]="modelValue[schema.field]"
+        v-model:[modelValueType]="modelValue"
         :allow-clear="true"
         :disabled="getDisable"
+        :loading="schema.loading"
         v-on="componentEvents"
       >
         <template v-if="Object.is(schema.loading, true)" #notFoundContent>
@@ -43,20 +43,18 @@
 </template>
 
 <script setup lang="tsx">
-  import { computed, unref, toRefs, onMounted, isVNode } from 'vue';
-  import { useVModel, isFunction } from '@vueuse/core';
-  import { cloneDeep } from 'lodash-es';
+  import { computed, unref, toRefs, isVNode, onMounted, watch, nextTick } from 'vue';
+  import { cloneDeep, debounce } from 'lodash-es';
   import { Form, Col, Spin, Divider } from 'ant-design-vue';
   import { useItemLabelWidth } from './hooks/useLabelWidth';
   import { componentMap } from './componentMap';
   import { createPlaceholderMessage } from './helper';
   import { useFormContext } from './hooks/useFormContext';
-  import type { PropType } from 'vue';
+  import { schemaFormItemProps } from './schema-form-item';
   import type { ComponentMapType } from './componentMap';
-  import type { CustomRenderFn, FormSchema, RenderCallbackParams } from './types/form';
+  import type { CustomRenderFn, FormSchema, RenderCallbackParams, ComponentProps } from './types/';
   import type { RuleObject } from 'ant-design-vue/es/form/';
-  import type { TableActionType } from '@/components/core/dynamic-table';
-  import { isBoolean, isNull, isObject, isString } from '@/utils/is';
+  import { isBoolean, isNull, isObject, isString, isFunction, isArray } from '@/utils/is';
   import BasicHelp from '@/components/basic/basic-help/index.vue';
   import { useI18n } from '@/hooks/useI18n';
 
@@ -64,37 +62,14 @@
     name: 'SchemaFormItem',
   });
 
-  const props = defineProps({
-    formModel: {
-      type: Object as PropType<Record<string, any>>,
-      default: () => ({}),
-    },
-    schema: {
-      type: Object as PropType<FormSchema>,
-      default: () => ({}),
-    },
-    setFormModel: {
-      type: Function as PropType<(key: string, value: any) => void>,
-      default: null,
-    },
-    // 动态表格实例
-    tableInstance: {
-      type: Object as PropType<TableActionType>,
-    },
-    /** 将表单组件实例保存起来 */
-    setItemRef: {
-      type: Function,
-      default: () => ({}),
-    },
-  });
-
+  const props = defineProps(schemaFormItemProps);
   const emit = defineEmits(['update:formModel']);
 
   // schemaForm组件实例
   const formContext = useFormContext();
-  const { formPropsRef } = formContext;
+  const { formPropsRef, setItemRef, updateSchema, getSchemaByFiled, appendSchemaByField } =
+    formContext;
 
-  const modelValue = useVModel(props, 'formModel', emit);
   const { t } = useI18n();
 
   const { schema } = toRefs(props);
@@ -102,13 +77,35 @@
   // @ts-ignore
   const itemLabelWidthProp = useItemLabelWidth(schema, formPropsRef);
 
-  const modelValueType = computed(() => {
+  const namePath = computed<string[]>(() => {
+    return isArray(schema.value.field) ? schema.value.field : schema.value.field.split('.');
+  });
+
+  const modelValue = computed({
+    get() {
+      return namePath.value.reduce((prev, field) => prev?.[field], props.formModel);
+    },
+    set(val) {
+      const namePath = schema.value.field.split('.');
+      const prop = namePath.pop()!;
+      const target = namePath.reduce((prev, field) => (prev[field] ??= {}), props.formModel);
+      target[prop] = val;
+      emit('update:formModel', props.formModel);
+    },
+  });
+
+  const modelValueType = computed<string>(() => {
     const { component, componentProps } = schema.value;
     if (!isFunction(componentProps) && componentProps?.vModelKey) {
       return componentProps.vModelKey;
     }
     const isCheck = isString(component) && ['Switch', 'Checkbox'].includes(component);
-    return isCheck ? 'checked' : 'value';
+    const isUpload = component === 'Upload';
+    return {
+      true: 'value',
+      [`${isCheck}`]: 'checked',
+      [`${isUpload}`]: 'file-list',
+    }['true'];
   });
 
   const getValues = computed<RenderCallbackParams>(() => {
@@ -119,7 +116,8 @@
       field: schema.field,
       formInstance: formContext,
       tableInstance,
-      formModel,
+      tableRowKey: props.tableRowKey,
+      formModel: props.tableRowKey ? formModel[props.tableRowKey] : formModel,
       values: {
         ...mergeDynamicData,
         ...formModel,
@@ -184,7 +182,7 @@
         return component;
       }
       return compKeys.reduce<Recordable<CustomRenderFn>>((slots, slotName) => {
-        slots[slotName] = (...rest: any) => vnodeFactory(component[slotName], rest);
+        slots[slotName] = (...rest: any) => vnodeFactory(component[slotName], ...rest);
         return slots;
       }, {});
     }
@@ -213,19 +211,24 @@
       : vnodeFactory(componentSlots);
   });
 
+  const getLabel = computed(() => {
+    const label = props.schema.label;
+    return isFunction(label) ? label(unref(getValues)) : label;
+  });
+
   /**
    * @description 表单组件props
    */
   const getComponentProps = computed(() => {
     const { schema } = props;
-    let { componentProps = {}, component, label = '' } = schema;
+    let { componentProps = {}, component } = schema;
 
     if (isFunction(componentProps)) {
       componentProps = componentProps(unref(getValues)) ?? {};
     }
 
     if (component !== 'RangePicker' && isString(component)) {
-      componentProps.placeholder ??= createPlaceholderMessage(component, label);
+      componentProps.placeholder ??= createPlaceholderMessage(component, getLabel.value);
     }
     if (schema.component === 'Divider') {
       componentProps = Object.assign({ type: 'horizontal' }, componentProps, {
@@ -233,9 +236,11 @@
         plain: true,
       });
     }
-    schema.field === 'field35' && console.log('componentProps', componentProps);
+    if (isVNode(getComponent.value)) {
+      Object.assign(componentProps, getComponent.value.props);
+    }
 
-    return componentProps as Recordable;
+    return componentProps;
   });
 
   /**
@@ -254,13 +259,13 @@
   });
 
   const renderLabelHelpMessage = computed(() => {
-    const { label, helpMessage, helpComponentProps, subLabel } = props.schema;
+    const { helpMessage, helpComponentProps, subLabel } = props.schema;
     const renderLabel = subLabel ? (
       <span>
-        {label} <span class="text-secondary">{subLabel}</span>
+        {getLabel.value} <span class="text-secondary">{subLabel}</span>
       </span>
     ) : (
-      vnodeFactory(label)
+      vnodeFactory(getLabel.value)
     );
     const getHelpMessage = isFunction(helpMessage) ? helpMessage(unref(getValues)) : helpMessage;
     if (!getHelpMessage || (Array.isArray(getHelpMessage) && getHelpMessage.length === 0)) {
@@ -293,7 +298,6 @@
       rules: defRules = [],
       component,
       rulesMessageJoinLabel,
-      label,
       dynamicRules,
       required,
     } = props.schema;
@@ -309,7 +313,7 @@
       ? rulesMessageJoinLabel
       : globalRulesMessageJoinLabel;
     const defaultMsg = isString(component)
-      ? `${createPlaceholderMessage(component, label)}${joinLabel ? label : ''}`
+      ? `${createPlaceholderMessage(component, getLabel.value)}${joinLabel ? getLabel.value : ''}`
       : undefined;
 
     function validator(rule: any, value: any) {
@@ -378,27 +382,64 @@
     return rules;
   });
 
-  onMounted(async () => {
-    if (getComponentProps.value?.request) {
-      const compProps = getComponentProps.value;
-      const { componentProps, component } = schema.value;
-
-      schema.value.loading = true;
-      schema.value.field === 'field35' && console.log('compProps', compProps, formPropsRef.value);
+  const fetchRemoteData = async (request) => {
+    if (request) {
+      const { component } = unref(schema);
 
       try {
-        const result = await getComponentProps.value?.request(unref(getValues));
+        const newSchema = {
+          ...unref(schema),
+          loading: true,
+          componentProps: {
+            ...unref(getComponentProps),
+            options: [],
+          } as ComponentProps,
+        };
+        updateSchema(newSchema);
+        const result = await request(unref(getValues));
         if (['Select', 'RadioGroup', 'CheckBoxGroup'].some((n) => n === component)) {
-          compProps.options = result;
+          newSchema.componentProps.options = result;
         } else if (['TreeSelect', 'Tree'].some((n) => n === component)) {
-          compProps.treeData = result;
+          newSchema.componentProps.treeData = result;
         }
-        if (componentProps) {
-          componentProps.requestResult = result;
+        if (newSchema.componentProps) {
+          newSchema.componentProps.requestResult = result;
         }
+        newSchema.loading = false;
+        updateSchema(newSchema);
       } finally {
-        schema.value.loading = false;
+        nextTick(() => {
+          schema.value.loading = false;
+        });
       }
     }
+  };
+
+  const initRequestConfig = () => {
+    const request = getComponentProps.value.request;
+    if (request) {
+      if (isFunction(request)) {
+        fetchRemoteData(request);
+      } else {
+        const { watchFields = [], options = {}, wait = 0, callback } = request;
+        const params = watchFields.map((field) => () => props.formModel[field]);
+        watch(
+          params,
+          debounce(() => {
+            fetchRemoteData(callback);
+          }, wait),
+          {
+            ...options,
+          },
+        );
+      }
+    }
+  };
+
+  onMounted(() => {
+    if (!getSchemaByFiled(props.schema.field)) {
+      appendSchemaByField(props.schema);
+    }
+    initRequestConfig();
   });
 </script>

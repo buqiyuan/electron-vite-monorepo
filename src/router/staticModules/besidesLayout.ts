@@ -1,4 +1,4 @@
-import { type RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import RouterView from '@/layout/routerView/index.vue';
 import { REDIRECT_NAME } from '@/router/constant';
 import router from '@/router';
@@ -17,7 +17,7 @@ export const REDIRECT_ROUTE: RouteRecordRaw = {
   },
   children: [
     {
-      path: '/redirect/:path(.*)',
+      path: ':path(.*)',
       name: REDIRECT_NAME,
       component: RouterView,
       meta: {

@@ -26,6 +26,7 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
     getFormProps,
     schemaFormRef,
     defaultFormValues,
+    originComponentPropsFnMap,
     handleFormValues,
   } = formActionContext;
 
@@ -107,7 +108,7 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
    * @description: 插入到指定 filed 后面，如果没传指定 field，则插入到最后,当 first = true 时插入到第一个位置
    */
   async function appendSchemaByField(schemaItem: FormSchema, prefixField?: string, first = false) {
-    const schemaList = cloneDeep<FormSchema[]>(unref(formSchemasRef));
+    const schemaList = cloneDeep(unref(formSchemasRef));
 
     const index = schemaList.findIndex((schema) => schema.field === prefixField);
 
@@ -127,7 +128,8 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
   /**
    * @description: 根据 field 删除 Schema
    */
-  async function removeSchemaByFiled(fields: string | string[]): Promise<void> {
+  async function removeSchemaByField(fields: string | string[]): Promise<void> {
+    // @ts-ignore
     const schemaList = cloneDeep<FormSchema[]>(unref(formSchemasRef));
 
     if (!fields) {
@@ -151,9 +153,18 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
   }
 
   /**
+   * @description: 根据 field 查找 Schema
+   */
+  function getSchemaByFiled(fields: string | string[]): FormSchema | undefined {
+    const schemaList = unref(formSchemasRef);
+    const fieldList = ([] as string[]).concat(fields);
+    return schemaList.find((schema) => fieldList.includes(schema.field));
+  }
+
+  /**
    * @description  更新formItemSchema
    */
-  async function updateSchema(data: Partial<FormSchema> | Partial<FormSchema>[]) {
+  const updateSchema = (data: Partial<FormSchema> | Partial<FormSchema>[]) => {
     let updateData: Partial<FormSchema>[] = [];
     if (isObject(data)) {
       updateData.push(data as FormSchema);
@@ -177,6 +188,17 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
       unref(formSchemasRef).forEach((val) => {
         if (val.field === item.field) {
           const newSchema = deepMerge(val, item);
+          if (originComponentPropsFnMap.has(val.field)) {
+            const originCompPropsFn = originComponentPropsFnMap.get(val.field)!;
+            const compProps = { ...newSchema.componentProps };
+            newSchema.componentProps = (opt) => {
+              const res = {
+                ...originCompPropsFn(opt),
+                ...compProps,
+              };
+              return res;
+            };
+          }
           schemas.push(newSchema);
         } else {
           schemas.push(val);
@@ -185,7 +207,7 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
     });
 
     unref(formPropsRef).schemas = uniqBy(schemas, 'field');
-  }
+  };
 
   async function resetFields(): Promise<void> {
     const { resetFunc, submitOnReset } = unref(getFormProps);
@@ -216,7 +238,7 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
     await schemaFormRef.value?.scrollToField(name, options);
   }
 
-  async function handleSubmit(e?: Event): Promise<void> {
+  async function handleSubmit(e?: Event) {
     e && e.preventDefault();
     const { submitFunc } = unref(getFormProps);
     if (submitFunc && isFunction(submitFunc)) {
@@ -229,21 +251,35 @@ export function useFormEvents(formActionContext: UseFormActionContext) {
       const values = await validate();
       const res = handleFormValues(values);
       emit('submit', res);
+      return res;
     } catch (error: any) {
       return Promise.reject(error);
     }
   }
 
+  const handleEnterPress = (e: KeyboardEvent) => {
+    const { autoSubmitOnEnter } = unref(formPropsRef);
+    if (!autoSubmitOnEnter) return;
+    if (e.key === 'Enter' && e.target && e.target instanceof HTMLElement) {
+      const target: HTMLElement = e.target as HTMLElement;
+      if (target && target.tagName && target.tagName.toUpperCase() == 'INPUT') {
+        handleSubmit(e);
+      }
+    }
+  };
+
   return {
     submit: handleSubmit,
+    handleEnterPress,
     clearValidate,
     validate,
     validateFields,
     getFieldsValue,
     updateSchema,
     resetSchema,
+    getSchemaByFiled,
     appendSchemaByField,
-    removeSchemaByFiled,
+    removeSchemaByField,
     resetFields,
     setFieldsValue,
     scrollToField,

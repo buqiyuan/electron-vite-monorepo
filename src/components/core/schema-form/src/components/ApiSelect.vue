@@ -20,14 +20,15 @@
   </Select>
 </template>
 <script lang="ts" setup>
-  import { PropType, ref, watchEffect, computed, unref, watch } from 'vue';
+  import { ref, watchEffect, computed, unref, watch } from 'vue';
   import { get, omit } from 'lodash-es';
   import { LoadingOutlined } from '@ant-design/icons-vue';
   import { selectProps } from 'ant-design-vue/es/select';
+  import VueTypes from 'vue-types';
   import { Select } from 'ant-design-vue';
+  import type { PropType } from 'vue';
   import { isFunction } from '@/utils/is';
   import { useI18n } from '@/hooks/useI18n';
-  import { propTypes } from '@/utils/propTypes';
 
   type OptionsItem = { label: string; value: string; disabled?: boolean };
 
@@ -39,7 +40,7 @@
   const props = defineProps({
     ...selectProps(),
     value: [Array, Object, String, Number],
-    numberToString: propTypes.bool,
+    numberToString: VueTypes.bool,
     api: {
       type: Function as PropType<(arg?: Recordable) => Promise<any>>,
       default: null,
@@ -50,11 +51,11 @@
       default: () => ({}),
     },
     // support xxx.xxx.xx
-    resultField: propTypes.string.def(''),
-    labelField: propTypes.string.def('label'),
-    valueField: propTypes.string.def('value'),
-    immediate: propTypes.bool.def(true),
-    alwaysLoad: propTypes.bool.def(false),
+    resultField: VueTypes.string.def(''),
+    labelField: VueTypes.string.def('label'),
+    valueField: VueTypes.string.def('value'),
+    immediate: VueTypes.bool.def(true),
+    alwaysLoad: VueTypes.bool.def(false),
   });
 
   const emit = defineEmits(['options-change', 'change']);

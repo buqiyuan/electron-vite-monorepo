@@ -1,9 +1,10 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { message as $message } from 'ant-design-vue';
+import type { AxiosRequestConfig } from 'axios';
 import { ACCESS_TOKEN_KEY } from '@/enums/cacheEnum';
 import { Storage } from '@/utils/Storage';
 import { useUserStore } from '@/store/modules/user';
-// import {ExclamationCircleOutlined} from '@ant-design/icons'
+import { uniqueSlash } from '@/utils/urlUtils';
 
 export interface RequestOptions {
   /** 当前接口权限, 不需要鉴权的接口请忽略， 格式：sys:user:add */
@@ -80,7 +81,7 @@ service.interceptors.response.use(
   (error) => {
     // 处理 422 或者 500 的错误异常提示
     const errMsg = error?.response?.data?.message ?? UNKNOWN_ERROR;
-    $message.error(errMsg);
+    $message.error({ content: errMsg, key: errMsg });
     error.message = errMsg;
     return Promise.reject(error);
   },
@@ -111,7 +112,7 @@ export const request = async <T = any>(
       return $message.error('你没有访问该接口的权限，请联系管理员！');
     }
     const fullUrl = `${(isMock ? baseMockUrl : baseApiUrl) + config.url}`;
-    config.url = fullUrl.replace(/(?<!:)\/{2,}/g, '/');
+    config.url = uniqueSlash(fullUrl);
 
     const res = await service.request(config);
     successMsg && $message.success(successMsg);

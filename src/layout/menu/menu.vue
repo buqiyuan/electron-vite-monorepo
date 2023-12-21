@@ -1,5 +1,5 @@
 <template>
-  <div class="menu-container" :style="{ height: isSideMenu ? 'calc(100vh - 64px)' : '' }">
+  <div class="menu-container" :class="{ 'is-side-menu': isSideMenu }">
     <Menu
       v-model:selected-keys="state.selectedKeys"
       :open-keys="isSideMenu ? state.openKeys : []"
@@ -9,9 +9,7 @@
       collapsible
       @click="clickMenuItem"
     >
-      <template v-for="item in menus" :key="item.name || item.fullPath">
-        <MenuItem :menu-info="item" />
-      </template>
+      <MenuItem :menus="menus" />
     </Menu>
   </div>
 </template>
@@ -22,7 +20,7 @@
   import { Menu, type MenuTheme } from 'ant-design-vue';
   import MenuItem from './menu-item.vue';
   import { useUserStore } from '@/store/modules/user';
-  import { useThemeStore } from '@/store/modules/projectConfig';
+  import { useLayoutSettingStore } from '@/store/modules/layoutSetting';
   import { LOGIN_NAME } from '@/router/constant';
 
   const props = defineProps({
@@ -35,7 +33,7 @@
     },
   });
   const userStore = useUserStore();
-  const themeStore = useThemeStore();
+  const layoutSettingStore = useLayoutSettingStore();
   // 当前路由
   const currentRoute = useRoute();
   const router = useRouter();
@@ -44,14 +42,11 @@
     selectedKeys: [currentRoute.name] as string[],
   });
 
-  const menus = computed(() => {
-    return [...userStore.menus]
-      .filter((n) => !n.meta?.hideInMenu)
-      .sort((a, b) => (a?.meta?.orderNum || 0) - (b?.meta?.orderNum || 0));
-  });
+  const menus = computed(() => userStore.menus);
   console.log('menus', menus.value);
   /** 侧边栏布局 */
-  const isSideMenu = computed(() => themeStore.layout === 'sidemenu');
+  const isSideMenu = computed(() => layoutSettingStore.layoutSetting.layout === 'sidemenu');
+  const getRouteByName = (name: string) => router.getRoutes().find((n) => n.name === name);
   // 根据activeMenu获取指定的menu
   const getTargetMenuByActiveMenuName = (activeMenu: string) => {
     return router.getRoutes().find((n) => [n.name, n.path].includes(activeMenu));
@@ -103,7 +98,9 @@
   // 点击菜单
   const clickMenuItem = ({ key }) => {
     if (key === currentRoute.name) return;
-    if (/http(s)?:/.test(key)) {
+    const targetRoute = getRouteByName(key);
+    const { isExt, openMode } = targetRoute?.meta || {};
+    if (isExt && openMode !== 2) {
       window.open(key);
     } else {
       router.push({ name: key });
@@ -119,5 +116,10 @@
       width: 0;
       height: 0;
     }
+
+    &.is-side-menu {
+      height: calc(100vh - 64px);
+    }
   }
 </style>
+@/store/modules/layout

@@ -1,4 +1,4 @@
-import { type RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import RouterView from '@/layout/routerView/index.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -9,6 +9,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'H5低代码平台',
       icon: 'icon-externa-link',
+      isExt: true,
     },
   },
 ];

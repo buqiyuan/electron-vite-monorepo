@@ -62,7 +62,7 @@
 
 <script lang="tsx" setup>
   import { computed, nextTick, type CSSProperties } from 'vue';
-  import { useRouter, useRoute, RouteRecordRaw } from 'vue-router';
+  import { useRouter, useRoute, type RouteRecordRaw } from 'vue-router';
   import {
     QuestionCircleOutlined,
     MenuFoldOutlined,
@@ -89,7 +89,7 @@
   import { useLockscreenStore } from '@/store/modules/lockscreen';
   import { LOGIN_NAME } from '@/router/constant';
   import { TitleI18n } from '@/components/basic/title-i18n';
-  import { useThemeStore } from '@/store/modules/projectConfig';
+  import { useLayoutSettingStore } from '@/store/modules/layoutSetting';
 
   defineProps({
     collapsed: {
@@ -101,7 +101,7 @@
   });
   const emit = defineEmits(['update:collapsed']);
   const userStore = useUserStore();
-  const themeStore = useThemeStore();
+  const layoutSettingStore = useLayoutSettingStore();
   const lockscreenStore = useLockscreenStore();
   const keepAliveStore = useKeepAliveStore();
 
@@ -109,7 +109,7 @@
   const route = useRoute();
   const userInfo = computed(() => userStore.userInfo);
   const headerStyle = computed<CSSProperties>(() => {
-    const { navTheme, layout } = themeStore;
+    const { navTheme, layout } = layoutSettingStore.layoutSetting;
     const isDark = navTheme === 'dark' && layout === 'topmenu';
     return {
       backgroundColor: navTheme === 'realDark' || isDark ? '' : 'rgba(255, 255, 255, 0.85)',
@@ -164,17 +164,19 @@
     }
     return route;
   };
+  const getRouteByName = (name: string) => router.getRoutes().find((n) => n.name === name);
 
   // 点击菜单
   const clickMenuItem = (menuItem: RouteRecordRaw) => {
     const lastChild = findLastChild(menuItem);
     console.log('lastChild', menuItem, lastChild);
 
-    if (lastChild?.name === route.name) return;
-    if (/http(s)?:/.test(lastChild?.name)) {
+    const targetRoute = getRouteByName(lastChild?.name);
+    const { isExt, openMode } = targetRoute?.meta || {};
+    if (isExt && openMode !== 2) {
       window.open(lastChild?.name);
-    } else if (lastChild?.name) {
-      router.push({ name: lastChild.name });
+    } else {
+      router.push({ name: lastChild?.name });
     }
   };
 
@@ -208,14 +210,14 @@
 
 <style lang="less" scoped>
   .layout-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
     display: flex;
+    position: sticky;
+    z-index: 10;
+    top: 0;
+    align-items: center;
+    justify-content: space-between;
     height: @header-height;
     padding: 0 20px;
-    justify-content: space-between;
-    align-items: center;
 
     * {
       cursor: pointer;

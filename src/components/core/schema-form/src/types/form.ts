@@ -29,6 +29,8 @@ export interface RenderCallbackParams<T = string> {
   formInstance: SchemaFormType;
   /** 动态表格实例 */
   tableInstance?: TableActionType;
+  /** 动态表格rowKey */
+  tableRowKey?: Key;
   /** 作用域插槽数据 */
   slotData?: Recordable;
 }
@@ -51,7 +53,7 @@ export interface FormActionType {
   updateSchema: (data: Partial<FormSchema> | Partial<FormSchema>[]) => Promise<void>;
   resetSchema: (data: Partial<FormSchema> | Partial<FormSchema>[]) => Promise<void>;
   setSchemaFormProps: (formProps: Partial<FormSchema>) => Promise<void>;
-  removeSchemaByFiled: (field: string | string[]) => Promise<void>;
+  removeSchemaByField: (field: string | string[]) => Promise<void>;
   appendSchemaByField: (
     schema: FormSchema,
     prefixField: string | undefined,
@@ -73,7 +75,7 @@ export interface FormSchema<T = string> {
   // Variable name bound to v-model Default value
   valueField?: string;
   // Label name
-  label?: string;
+  label?: string | ((v: RenderCallbackParams<T>) => string);
   // Auxiliary text
   subLabel?: string;
   // Help text on the right side of the text
@@ -119,6 +121,8 @@ export interface FormSchema<T = string> {
   // col configuration outside formModelItem
   colProps?: Partial<ColEx>;
 
+  /** 搜索表单项排序 */
+  order?: number;
   // 默认值
   defaultValue?: any;
   isAdvanced?: boolean;

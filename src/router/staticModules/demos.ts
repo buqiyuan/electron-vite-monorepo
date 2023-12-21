@@ -1,4 +1,4 @@
-import { type RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import RouterView from '@/layout/routerView/index.vue';
 import { t } from '@/hooks/useI18n';
 
@@ -102,6 +102,16 @@ const routes: Array<RouteRecordRaw> = [
             },
             component: () => import('@/views/demos/form/custom-form/index.vue'),
           },
+          {
+            path: 'request-form',
+            name: `${moduleName}-form-request`,
+            meta: {
+              title: '自定义请求表单',
+              icon: 'icon-zhuomian',
+              keepAlive: true,
+            },
+            component: () => import('@/views/demos/form/request-form/index.vue'),
+          },
         ],
       },
       {
@@ -126,6 +136,19 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import(
                 /* webpackChunkName: "search-table" */ '@/views/demos/tables/search-table/index.vue'
+              ),
+          },
+          {
+            path: 'edit-row-table',
+            name: `${moduleName}-edit-row-table`,
+            meta: {
+              title: t('routes.demo.table.editRowTable'),
+              icon: 'icon-zhuomian',
+              keepAlive: false,
+            },
+            component: () =>
+              import(
+                /* webpackChunkName: "edit-row-table" */ '@/views/demos/tables/edit-row-table/index.vue'
               ),
           },
           {

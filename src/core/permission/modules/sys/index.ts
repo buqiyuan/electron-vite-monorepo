@@ -1,11 +1,12 @@
-import { SysLogPerms } from './log';
-import { SysDeptPerms } from './dept';
-import { SysMenuPerms } from './menu';
-import { SysOnlinePerms } from './online';
-import { SysRolePerms } from './role';
-import { SysTaskPerms } from './task';
-import { SysUserPerms } from './user';
-import { SysServePerms } from './serve';
+import type { SysLogPerms } from './log';
+import type { SysDeptPerms } from './dept';
+import type { SysMenuPerms } from './menu';
+import type { SysOnlinePerms } from './online';
+import type { SysRolePerms } from './role';
+import type { SysTaskPerms } from './task';
+import type { SysUserPerms } from './user';
+import type { SysServePerms } from './serve';
+import type { SysParamConfigPerms } from './param-config';
 
 export type SysPermissionType =
   | SysLogPerms
@@ -15,4 +16,5 @@ export type SysPermissionType =
   | SysRolePerms
   | SysTaskPerms
   | SysServePerms
-  | SysUserPerms;
+  | SysUserPerms
+  | SysParamConfigPerms;

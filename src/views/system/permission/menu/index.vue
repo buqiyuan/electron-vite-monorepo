@@ -1,13 +1,6 @@
 <template>
   <div>
-    <DynamicTable
-      row-key="id"
-      header-title="菜单管理"
-      :data-request="loadTableData"
-      :columns="columns"
-      bordered
-      :scroll="{ x: 2000 }"
-    >
+    <DynamicTable header-title="菜单管理" :data-request="loadTableData" :columns="columns">
       <template #toolbar>
         <a-button type="primary" :disabled="!$auth('sys.menu.add')" @click="openMenuModal({})">
           新增
@@ -21,7 +14,7 @@
   import { ref } from 'vue';
   import { cloneDeep } from 'lodash-es';
   import { baseColumns, type TableListItem, type TableColumnItem } from './columns';
-  import { menuSchemas } from './formSchemas';
+  import { useMenuSchemas } from './formSchemas';
   import type { TreeSelectProps } from 'ant-design-vue';
   import { getMenuList, updateMenu, createMenu, deleteMenu } from '@/api/system/menu';
   import { useTable } from '@/components/core/dynamic-table';
@@ -37,6 +30,9 @@
     search: false,
     pagination: false,
     size: 'small',
+    rowKey: 'id',
+    bordered: true,
+    scroll: { x: 2000 },
   });
   const [showModal] = useFormModal();
 
@@ -57,15 +53,20 @@
         width: 700,
         onFinish: async (values) => {
           console.log('新增/编辑菜单', values);
-          values.menuId = record.id;
-          values.perms = values.perms?.join(',');
+          record.id && (values.menuId = record.id);
+          if (values.type === 1 && values.viewPath?.length) {
+            values.viewPath = values.viewPath.join('/');
+          }
+          if (values.type === 2 && values.perms?.length) {
+            values.perms = values.perms.map((n) => n.join(':')).toString();
+          }
           await (record.id ? updateMenu : createMenu)(values);
-          dynamicTableInstance?.reload();
+          dynamicTableInstance.reload();
         },
       },
       formProps: {
         labelWidth: 100,
-        schemas: menuSchemas,
+        schemas: useMenuSchemas(),
       },
     });
 
@@ -82,13 +83,17 @@
     formRef?.setFieldsValue({
       ...record,
       icon: record.icon ?? '',
-      perms: record.perms?.split(','),
+      perms: record.perms
+        ?.split(',')
+        .filter(Boolean)
+        .map((n) => n.split(':')),
+      viewPath: record.viewPath?.split('/'),
       parentId: record.parentId ?? -1,
     });
   };
   const delRowConfirm = async (record: TableListItem) => {
     await deleteMenu({ menuId: record.id });
-    dynamicTableInstance?.reload();
+    dynamicTableInstance.reload();
   };
 
   const columns: TableColumnItem[] = [
@@ -96,7 +101,7 @@
     {
       title: '操作',
       width: 160,
-      dataIndex: '$action',
+      dataIndex: 'ACTION',
       hideInSearch: true,
       align: 'center',
       fixed: 'right',

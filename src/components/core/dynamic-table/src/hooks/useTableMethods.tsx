@@ -1,9 +1,14 @@
-import { unref } from 'vue';
-import { isObject, isString } from 'lodash-es';
-import type { VNode } from 'vue';
+import { unref, nextTick, getCurrentInstance } from 'vue';
+import { isObject, isFunction } from 'lodash-es';
+import { useInfiniteScroll } from '@vueuse/core';
+import { useEditable } from './useEditable';
 import type { DynamicTableProps, DynamicTableEmitFn } from '../dynamic-table';
 import type { OnChangeCallbackParams, TableColumn } from '../types/';
-import type { TableState } from './useTableState';
+import type { Pagination, TableState } from './useTableState';
+import type { FormProps } from 'ant-design-vue';
+import { isAsyncFunction, isBoolean } from '@/utils/is';
+
+export type UseInfiniteScrollParams = Parameters<typeof useInfiniteScroll>;
 
 export type TableMethods = ReturnType<typeof useTableMethods>;
 
@@ -13,15 +18,16 @@ export type UseTableMethodsContext = {
   emit: DynamicTableEmitFn;
 };
 
+let retryFetchCount = 2;
+
 export const useTableMethods = ({ state, props, emit }: UseTableMethodsContext) => {
-  const { innerPropsRef, tableData, loadingRef, queryFormRef, paginationRef } = state;
+  const { innerPropsRef, tableData, loadingRef, queryFormRef, paginationRef, editFormErrorMsgs } =
+    state;
+  // 可编辑行
+  const editableMethods = useEditable({ state, props });
 
   const setProps = (props: Partial<DynamicTableProps>) => {
     innerPropsRef.value = { ...unref(innerPropsRef), ...props };
-  };
-
-  const getComponent = (comp: VNode | string) => {
-    return isString(comp) ? <>{comp}</> : comp;
   };
 
   /**
@@ -38,11 +44,20 @@ export const useTableMethods = ({ state, props, emit }: UseTableMethodsContext) 
    * @description 获取表格数据
    */
   const fetchData = async (params = {}, rest?: OnChangeCallbackParams) => {
+    const [pagination] = rest || [];
     // 如果用户没有提供dataSource并且dataRequest是一个函数，那就进行接口请求
     if (
       Object.is(props.dataSource, undefined) &&
-      Object.prototype.toString.call(props.dataRequest).includes('Function')
+      (isFunction(props.dataRequest) || isAsyncFunction(props.dataRequest))
     ) {
+      await nextTick();
+      if (queryFormRef.value) {
+        const values = await queryFormRef.value.validate();
+        params = {
+          ...queryFormRef.value.handleFormValues(values),
+          ...params,
+        };
+      }
       const _pagination = unref(paginationRef)!;
       // 是否启用了分页
       const enablePagination = isObject(_pagination);
@@ -64,19 +79,21 @@ export const useTableMethods = ({ state, props, emit }: UseTableMethodsContext) 
       if (data?.pagination) {
         const { page, size, total } = data.pagination;
 
-        if (enablePagination && _pagination?.current) {
-          // 有分页时,删除当前页最后一条数据时 往前一页查询
+        if (enablePagination && _pagination?.current && retryFetchCount-- > 0) {
+          // 有分页时,删除当前页最后一条数据时 自动往前一页查询
           if (data?.list.length === 0 && total > 0 && page > 1) {
             _pagination.current--;
             return reload();
           }
         }
 
-        Object.assign(unref(paginationRef), {
-          current: ~~page,
-          pageSize: ~~size,
-          total: ~~total,
+        updatePagination({
+          current: page,
+          pageSize: size,
+          total,
         });
+      } else {
+        updatePagination(pagination);
       }
       if (Array.isArray(data?.list)) {
         tableData.value = data!.list;
@@ -85,7 +102,11 @@ export const useTableMethods = ({ state, props, emit }: UseTableMethodsContext) 
       } else {
         tableData.value = [];
       }
+    } else {
+      updatePagination(pagination);
     }
+
+    retryFetchCount = 2;
     return tableData;
   };
 
@@ -106,13 +127,11 @@ export const useTableMethods = ({ state, props, emit }: UseTableMethodsContext) 
   const handleTableChange = async (...rest: OnChangeCallbackParams) => {
     // const [pagination, filters, sorter] = rest;
     const [pagination] = rest;
-    let params = {};
     if (queryFormRef.value) {
-      const values = await queryFormRef.value.validate();
-      params = queryFormRef.value.handleFormValues(values);
+      await queryFormRef.value.validate();
     }
-    Object.assign(unref(paginationRef), pagination || {});
-    fetchData(params, rest);
+    updatePagination(pagination);
+    await fetchData({}, rest);
     emit('change', ...rest);
   };
 
@@ -121,7 +140,38 @@ export const useTableMethods = ({ state, props, emit }: UseTableMethodsContext) 
 
   // 获取表格列key
   const getColumnKey = (column: TableColumn) => {
-    return column?.key || column?.dataIndex;
+    return (column?.key || column?.dataIndex) as string;
+  };
+
+  /** 编辑表单验证失败回调 */
+  const handleEditFormValidate: FormProps['onValidate'] = (name, status, errorMsgs) => {
+    // console.log('errorInfo', editFormErrorMsgs);
+    const key = Array.isArray(name) ? name.join('.') : name;
+    if (status) {
+      editFormErrorMsgs.value.delete(key);
+    } else {
+      editFormErrorMsgs.value.set(key, errorMsgs);
+    }
+  };
+
+  /** 更新表格分页信息 */
+  const updatePagination = (info: Pagination = paginationRef.value) => {
+    if (isBoolean(info)) {
+      paginationRef.value = info;
+    } else if (isObject(paginationRef.value)) {
+      paginationRef.value = {
+        ...paginationRef.value,
+        ...info,
+      };
+    }
+  };
+  /** 表格无限滚动 */
+  const onInfiniteScroll = (
+    callback: UseInfiniteScrollParams[1],
+    options?: UseInfiniteScrollParams[2],
+  ) => {
+    const el = getCurrentInstance()?.proxy?.$el.querySelector('.ant-table-body');
+    useInfiniteScroll(el, callback, options);
   };
 
   /**
@@ -130,13 +180,15 @@ export const useTableMethods = ({ state, props, emit }: UseTableMethodsContext) 
   const getQueryFormRef = () => queryFormRef.value;
 
   return {
+    ...editableMethods,
     setProps,
-    getComponent,
     handleSubmit,
     handleTableChange,
     getColumnKey,
     fetchData,
     getQueryFormRef,
     reload,
+    onInfiniteScroll,
+    handleEditFormValidate,
   };
 };

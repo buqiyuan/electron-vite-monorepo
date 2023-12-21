@@ -1,3 +1,4 @@
+import { Tag } from 'ant-design-vue';
 import type { TableColumn } from '@/components/core/dynamic-table';
 // import { Avatar, Space, Tag } from 'ant-design-vue';
 
@@ -24,20 +25,22 @@ export const baseColumns: TableColumnItem[] = [
   {
     title: '名称',
     dataIndex: 'name',
+    width: 240,
+    fixed: 'left',
   },
   {
     title: '图标',
     width: 80,
     dataIndex: 'icon',
     align: 'center',
-    bodyCell: ({ record }) => <>{record.icon && <icon-font type={record.icon} size="22" />}</>,
+    customRender: ({ record }) => record.icon && <icon-font type={record.icon} size="22" />,
   },
   {
     title: '类型',
     width: 80,
     align: 'center',
     dataIndex: 'type',
-    bodyCell: ({ record }) => <>{getMenuType(record.type)}</>,
+    customRender: ({ record }) => getMenuType(record.type),
   },
   {
     title: '节点路由',
@@ -50,6 +53,7 @@ export const baseColumns: TableColumnItem[] = [
     dataIndex: 'keepalive',
     align: 'center',
     width: 80,
+    customRender: ({ record }) => record.type === 1 && (record.keepalive ? '是' : '否'),
   },
   {
     title: '文件路径',
@@ -62,6 +66,16 @@ export const baseColumns: TableColumnItem[] = [
     width: 300,
     align: 'center',
     dataIndex: 'perms',
+    customRender: ({ record }) =>
+      record.type == 2 && (
+        <div>
+          {record.perms?.split(',').map((i) => (
+            <Tag color="blue" key={i}>
+              {i}
+            </Tag>
+          ))}
+        </div>
+      ),
   },
   {
     title: '排序号',

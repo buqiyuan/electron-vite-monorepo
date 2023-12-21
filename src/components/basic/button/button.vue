@@ -1,45 +1,51 @@
 <template>
-  <Button
-    v-bind="props"
-    :danger="['danger'].includes(type)"
-    :type="buttonType"
-    :class="[`ant-btn-${type}`]"
-  >
-    <template v-for="(_, key) in $slots" #[key]>
-      <slot :name="key"></slot>
-    </template>
-  </Button>
+  <ProConfigProvider :theme="btnTheme">
+    <Button v-bind="{ ...$attrs, ...props }" :type="buttonType">
+      <template v-for="(_, key) in $slots" #[key]>
+        <slot :name="key"></slot>
+      </template>
+    </Button>
+  </ProConfigProvider>
 </template>
 <script lang="ts" setup>
   import { computed } from 'vue';
   import { Button } from 'ant-design-vue';
-  import { buttonProps, type ButtonType } from './button';
-  import type { PropType, ComputedRef } from 'vue';
-  import type { ButtonType as AButtonType } from 'ant-design-vue/es/button';
+  import { buttonProps, buttonColorPrimary, aButtonTypes } from './button';
+  import type { ButtonType, AButtonType } from './button';
+
+  defineOptions({
+    name: 'AButton',
+  });
 
   const props = defineProps({
     ...buttonProps(),
     type: {
       type: String as PropType<ButtonType>,
-      default: 'default',
     },
+    // 自定义按钮颜色
+    color: String,
   });
 
-  const buttonTypes = ['default', 'primary', 'ghost', 'dashed', 'link', 'text'];
-  const buttonType = computed(() => {
-    const type = props.type;
-    return buttonTypes.includes(type)
-      ? (type as ButtonType)
-      : ['danger'].includes(type)
-      ? 'primary'
-      : 'default';
-  }) as ComputedRef<AButtonType>;
+  const isCustomType = computed(() => Reflect.has(buttonColorPrimary, props.type!));
+
+  const buttonType = computed<AButtonType>(() => {
+    if (props.type && aButtonTypes.includes(props.type)) {
+      return props.type as AButtonType;
+    } else if (props.color || isCustomType.value) {
+      return 'primary';
+    }
+    return 'default';
+  });
+
+  const btnTheme = computed(() => {
+    const type = props.type!;
+    if (props.color || isCustomType.value) {
+      return {
+        token: {
+          colorPrimary: props.color || buttonColorPrimary[type],
+        },
+      };
+    }
+    return undefined;
+  });
 </script>
-
-<style lang="less" scoped>
-  @import 'styles/success';
-</style>
-
-<style lang="less" scoped>
-  @import 'styles/warning';
-</style>

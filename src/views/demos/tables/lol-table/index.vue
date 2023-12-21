@@ -45,13 +45,13 @@
   let tableData: any[] = [];
 
   const aoaToExcel = () => {
-    const colFilters = columns.filter((n) => n.dataIndex !== '$action');
+    const colFilters = columns.filter((n) => n.dataIndex !== 'INDEX');
     const colFilterKeys = colFilters.map((n) => n.dataIndex);
     // 保证data顺序与header一致
     aoaToSheetXlsx({
       data: tableData
         .map((item) => {
-          return colFilterKeys.reduce((p, k) => {
+          return colFilterKeys.reduce<Recordable>((p, k: string) => {
             p[k] = Array.isArray(item[k]) ? item[k].toString() : item[k];
             return p;
           }, {});

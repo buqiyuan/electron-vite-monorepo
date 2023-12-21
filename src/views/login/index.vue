@@ -55,6 +55,7 @@
   import { message, Modal } from 'ant-design-vue';
   import { useUserStore } from '@/store/modules/user';
   import { getImageCaptcha } from '@/api/login';
+  import { to } from '@/utils/awaitTo';
 
   const state = reactive({
     loading: false,
@@ -91,38 +92,38 @@
     state.loading = true;
     console.log(state.formInline);
     // params.password = md5(password)
-    try {
-      await userStore.login(state.formInline).finally(() => {
-        state.loading = false;
-        message.destroy();
-      });
-      message.success('登录成功！');
-      setTimeout(() => router.replace((route.query.redirect as string) ?? '/'));
-    } catch (error: any) {
+
+    const [err] = await to(userStore.login(state.formInline));
+    if (err) {
       Modal.error({
         title: () => '提示',
-        content: () => error.message,
+        content: () => err.message,
       });
       setCaptcha();
+    } else {
+      message.success('登录成功！');
+      setTimeout(() => router.replace((route.query.redirect as string) ?? '/'));
     }
+    state.loading = false;
+    message.destroy();
   };
 </script>
 
 <style lang="less" scoped>
   .login-box {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100vw;
     height: 100vh;
     padding-top: 240px;
     background: url('@/assets/login.svg');
     background-size: 100%;
-    flex-direction: column;
-    align-items: center;
 
     .login-logo {
       display: flex;
-      margin-bottom: 30px;
       align-items: center;
+      margin-bottom: 30px;
 
       .svg-icon {
         font-size: 48px;

@@ -1,5 +1,5 @@
 <template>
-  <Popover v-model:visible="visible" placement="bottomLeft" trigger="focus">
+  <Popover v-model:open="visible" placement="bottomLeft" trigger="focus">
     <template #content>
       <div class="select-box">
         <template v-for="iconItem in glyphs" :key="iconItem.font_class">
@@ -49,7 +49,7 @@
   const visible = ref(false);
   const modelValue = useVModel(props, 'value', emit);
 
-  const selectIcon = (iconItem: typeof glyphs[number]) => {
+  const selectIcon = (iconItem: (typeof glyphs)[number]) => {
     modelValue.value = iconItem.font_class;
     visible.value = false;
   };
@@ -60,6 +60,7 @@
 
     &-item {
       @apply flex m-2px p-6px;
+
       border: 1px solid #e5e7eb;
 
       &:hover,

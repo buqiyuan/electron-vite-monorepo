@@ -7,7 +7,7 @@
 <script lang="ts" setup>
   import { computed, type CSSProperties } from 'vue';
   defineOptions({
-    name: 'svg-icon',
+    name: 'SvgIcon',
   });
 
   const props = defineProps({
@@ -38,7 +38,7 @@
 <style lang="less">
   .svg-icon {
     overflow: hidden;
+    fill: currentcolor;
     vertical-align: -0.15em;
-    fill: currentColor;
   }
 </style>
