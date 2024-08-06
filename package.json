@@ -7,6 +7,11 @@
     "node": ">=18.0.0"
   },
   "private": true,
+  "author": {
+    "name": "buqiyuan",
+    "email": "1743369777@qq.com",
+    "url": "https://github.com/buqiyuan"
+  },
   "scripts": {
     "dev": "tsx scripts/watch.ts",
     "build": "turbo run build && pnpm run compile",
