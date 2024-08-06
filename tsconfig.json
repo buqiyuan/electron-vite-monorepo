@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "esnext",
+    "baseUrl": ".",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "types": [
+      "node",
+      "vite/client",
+    ],
+  },
+  "include": [
+    "scripts/**/*.ts",
+    "**/*.d.ts",
+    "./apps/electron/node_modules/electron/**/*.d.ts",
+  ],
+}
