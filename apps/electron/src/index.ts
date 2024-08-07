@@ -10,7 +10,7 @@ if (!isSingleInstance) {
   app.quit();
   process.exit(0);
 }
-app.on("second-instance", restoreOrCreateWindow); 
+app.on("second-instance", restoreOrCreateWindow);
 
 /**
  * Shout down background process if all windows was closed

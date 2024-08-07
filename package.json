@@ -6,17 +6,23 @@
     "pnpm": ">=9.0.0",
     "node": ">=18.0.0"
   },
-  "private": true,
+  "private": false,
+  "license": "MIT",
   "author": {
     "name": "buqiyuan",
     "email": "1743369777@qq.com",
     "url": "https://github.com/buqiyuan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buqiyuan/electron-vite-monorepo.git"
   },
   "scripts": {
     "dev": "tsx scripts/watch.ts",
     "build": "turbo run build && pnpm run compile",
     "dev:p": "turbo run dev --parallel",
     "compile": "turbo run compile",
+    "build:pkg": "pnpm -F electron-main run build:pkg",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
@@ -25,8 +31,8 @@
     "@types/node": "^22.1.0",
     "prettier": "^3.3.3",
     "tsx": "^4.16.5",
-    "turbo": "^2.0.11",
+    "turbo": "^2.0.12",
     "unplugin-auto-expose": "^0.3.0",
-    "vite": "^5.3.5"
+    "vite": "^5.4.0"
   }
 }

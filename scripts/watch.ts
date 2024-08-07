@@ -27,7 +27,7 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
   return build({
     mode,
     logLevel,
-    configFile: 'apps/electron/vite.config.js',
+    configFile: 'apps/electron/vite.config.ts',
     build: {
       /**
        * 设置为{}以启用rollup监听器
@@ -72,7 +72,7 @@ function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
   return build({
     mode,
     logLevel,
-    configFile: 'apps/preload/vite.config.js',
+    configFile: 'apps/preload/vite.config.ts',
     build: {
       /**
        * 设置为{}以启用rollup监听器
@@ -108,7 +108,7 @@ function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
   const rendererWatchServer = await createServer({
     mode,
     logLevel,
-    configFile: 'apps/web/vite.config.js',
+    configFile: 'apps/web/vite.config.ts',
   }).then(s => s.listen());
 
   await setupPreloadPackageWatcher(rendererWatchServer);

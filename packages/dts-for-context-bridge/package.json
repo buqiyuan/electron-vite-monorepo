@@ -26,7 +26,6 @@
     "electron",
     "typescript"
   ],
-  "author": "Alex Kozack (https://kozack.me)",
   "repository": {
     "type": "git",
     "url": "https://github.com/cawa-93/dts-for-context-bridge.git"
