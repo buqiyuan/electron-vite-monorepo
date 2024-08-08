@@ -84,6 +84,7 @@ const targetPlatform: Platform = {
 build({
   targets: targetPlatform.createTarget(),
   config: options,
+  publish: "always"
 })
   .then((result) => {
     console.log(JSON.stringify(result));
