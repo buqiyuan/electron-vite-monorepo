@@ -19,7 +19,7 @@
   },
   "scripts": {
     "dev": "tsx scripts/watch.ts",
-    "build": "turbo run build && pnpm run compile",
+    "build": "turbo run build",
     "dev:p": "turbo run dev --parallel",
     "compile": "turbo run compile",
     "build:pkg": "pnpm -F electron-main run build:pkg",
