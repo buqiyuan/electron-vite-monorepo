@@ -11,9 +11,7 @@ const workDir = path.join(__dirname, "../");
 cpSync(path.join(workDir, "../web/dist"), path.join(workDir, "./dist/web"), {
   recursive: true,
 });
-cpSync(
-  path.join(workDir, "../preload/dist"),
-  path.join(workDir, "./dist/preload"),
+cpSync(path.join(workDir, "../preload/dist"), path.join(workDir, "./dist/preload"),
   { recursive: true },
 );
 
@@ -46,7 +44,12 @@ const options: Configuration = {
   buildDependenciesFromSource: false,
 
   win: {
-    target: "nsis",
+    target: [
+      {
+        target: "nsis",
+        arch: ["ia32", "x64"],
+      }
+    ],
   },
 
   mac: {
@@ -84,7 +87,7 @@ const targetPlatform: Platform = {
 build({
   targets: targetPlatform.createTarget(),
   config: options,
-  publish: "always"
+  publish: process.env.CI ? "always" : "never",
 })
   .then((result) => {
     console.log(JSON.stringify(result));
