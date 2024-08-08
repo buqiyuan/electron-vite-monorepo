@@ -69,7 +69,7 @@ const options: Configuration = {
   publish: [
     {
       provider: 'github',
-      releaseType: 'draft',
+      releaseType: 'prerelease',
     }
   ]
 };
@@ -84,6 +84,7 @@ const targetPlatform: Platform = {
 build({
   targets: targetPlatform.createTarget(),
   config: options,
+  publish: "always"
 })
   .then((result) => {
     console.log(JSON.stringify(result));

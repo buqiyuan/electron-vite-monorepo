@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [test]
+    branches: [main]
 #   tags:
 #     - 'v*.*.*'
 jobs:
@@ -12,7 +12,6 @@ jobs:
 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CUSTOM_ENV_VAR: "custom_value"
 
     strategy:
       fail-fast: false
@@ -42,22 +41,15 @@ jobs:
 
       - name: Release for Windows
         if: matrix.os == 'windows-latest'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pnpm build:pkg
 
       - name: Release for MacOS
-        if: matrix.os == 'macos-12'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: matrix.os == 'macos-latest'
         run: |
-          echo "$CUSTOM_ENV_VAR . Today is !"
           pnpm build:pkg
 
       - name: Release for Linux
         if: matrix.os == 'ubuntu-latest'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pnpm build:pkg
