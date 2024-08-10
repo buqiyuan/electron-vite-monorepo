@@ -2,7 +2,6 @@
 
 import { chrome } from '../electron/.electron-vendors.cache.json';
 import vue from '@vitejs/plugin-vue';
-import { renderer } from 'unplugin-auto-expose';
 import { join } from 'node:path';
 import { UserConfig } from 'vite';
 
@@ -37,9 +36,6 @@ const config: UserConfig = {
   },
   plugins: [
     vue(),
-    renderer.vite({
-      preloadEntry: join(PACKAGE_ROOT, '../preload/src/index.ts'),
-    }),
   ],
 };
 

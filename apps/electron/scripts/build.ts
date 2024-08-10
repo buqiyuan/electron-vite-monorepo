@@ -2,6 +2,7 @@ import { build, Configuration, Platform } from "electron-builder";
 import { cpSync } from "node:fs";
 import { exit, platform } from "node:process";
 import path from "node:path";
+import { notarizeMac } from "./notarize-mac";
 
 const version = process.env.npm_package_version;
 console.log("版本号：", version);
@@ -16,8 +17,9 @@ cpSync(path.join(workDir, "../preload/dist"), path.join(workDir, "./dist/preload
 );
 
 const options: Configuration = {
-  // appId: "com.linkv.electron",
-  productName: 'ElectronViteMonorepo',
+  appId: "com.lumi.app",
+  productName: "Lumibrowser",
+  copyright: "lumibrowser",
   asar: true,
   directories: {
     output: "out",
@@ -35,10 +37,7 @@ const options: Configuration = {
   removePackageScripts: true,
 
   afterSign: async (context) => {
-    // Mac releases require hardening+notarization: https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution
-    if (context.electronPlatformName === "darwin") {
-      // await notarizeMac(context)
-    }
+    await notarizeMac(context)
   },
   nodeGypRebuild: false,
   buildDependenciesFromSource: false,
@@ -52,13 +51,16 @@ const options: Configuration = {
     ],
   },
 
+  dmg: {
+    sign: true
+  },
   mac: {
     target: ["dmg", "zip"],
+    hardenedRuntime: true,
+    gatekeeperAssess: false,
     entitlements: "buildResources/entitlements.mac.plist",
     entitlementsInherit: "buildResources/entitlements.mac.plist",
     identity: "LINKV TECH PTE. LTD. (GLM223L5MF)",
-    hardenedRuntime: true,
-    gatekeeperAssess: true,
   },
 
   linux: {
@@ -73,8 +75,9 @@ const options: Configuration = {
     {
       provider: 'github',
       releaseType: 'prerelease',
+      // private: true,
     }
-  ]
+  ],
 };
 
 // 要打包的目标平台
