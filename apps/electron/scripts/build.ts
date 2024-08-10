@@ -61,9 +61,7 @@ const options: Configuration = {
     entitlements: "buildResources/entitlements.mac.plist",
     entitlementsInherit: "buildResources/entitlements.mac.plist",
     identity: "LINKV TECH PTE. LTD. (GLM223L5MF)",
-    notarize: {
-      teamId: process.env.APPLE_TEAM_ID!,
-    }
+    notarize: false
   },
 
   linux: {
