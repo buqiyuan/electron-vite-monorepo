@@ -1,0 +1,22 @@
+{
+  "name": "@repo/vite-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "npx tsx watch ./src/index.ts"
+  },
+  "dependencies": {
+    "javascript-obfuscator": "^4.1.1",
+    "terser": "^5.31.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

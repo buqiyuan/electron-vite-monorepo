@@ -2,22 +2,22 @@
   "name": "electron-main",
   "version": "0.1.0",
   "private": false,
-  "engines": {
-    "node": ">=v16.13",
-    "npm": ">=8.1"
-  },
-  "main": "dist/index.cjs",
-  "license": "MIT",
+  "description": "Electron main process",
   "author": {
     "name": "buqiyuan",
     "email": "1743369777@qq.com",
     "url": "https://github.com/buqiyuan"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/buqiyuan/electron-vite-monorepo.git"
   },
-  "description": "Electron main process",
+  "main": "dist/index.cjs",
+  "engines": {
+    "node": ">=v16.13",
+    "npm": ">=8.1"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -27,18 +27,16 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 electron ../../scripts/update-electron-vendors.js"
   },
-  "devDependencies": {
-    "@electron/notarize": "^2.3.2",
-    "@types/node": "^22.2.0",
-    "@typescript-eslint/eslint-plugin": "8.0.1",
-    "cross-env": "7.0.3",
-    "electron": "31.3.1",
-    "electron-builder": "24.13.3",
-    "eslint": "9.9.0",
-    "typescript": "5.5.4",
-    "vite": "5.4.0"
-  },
   "dependencies": {
     "electron-updater": "6.2.1"
+  },
+  "devDependencies": {
+    "@electron/notarize": "^2.3.2",
+    "@repo/electron-preload": "workspace:*",
+    "@types/node": "^22.2.0",
+    "electron": "31.3.1",
+    "electron-builder": "24.13.3",
+    "typescript": "5.5.4",
+    "vite": "5.4.0"
   }
 }

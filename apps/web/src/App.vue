@@ -1,22 +1,27 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 
-const electronVersions = window.electron.versions
+onMounted(async () => {
+  const username = await globalThis.electronAPI.send('getUsernameById', 1)
+  console.log('getUsernameById', username)
+
+  window.electronAPI.on('newUserJoin', (userID) => {
+    console.log('userID', userID)
+  })
+})
 </script>
 
 <template>
   <div>
     <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
+      <img src="/vite.svg" class="logo" alt="Vite logo">
     </a>
     <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo">
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
-  <pre>
-    {{ electronVersions }}
-  </pre>
 </template>
 
 <style scoped>

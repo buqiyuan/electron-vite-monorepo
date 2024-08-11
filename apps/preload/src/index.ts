@@ -2,9 +2,21 @@
  * @module preload
  */
 
-import { contextBridge, ipcRenderer } from "electron";
+import process from 'node:process'
+import { contextBridge } from 'electron'
+import { IPCRenderer } from './ipcRenderer'
+import type { MainMessage, RenderMessage } from './types/'
 
-contextBridge.exposeInMainWorld("electron", {
+export * from './types/'
+
+const ipcRenderer = new IPCRenderer<RenderMessage, MainMessage>()
+
+const electronAPI = {
   versions: process.versions,
-  doThing: () => ipcRenderer.send('do-a-thing')
-});
+  send: ipcRenderer.send,
+  on: ipcRenderer.on,
+} as const
+
+export type ElectronAPI = typeof electronAPI
+
+contextBridge.exposeInMainWorld('electronAPI', electronAPI)

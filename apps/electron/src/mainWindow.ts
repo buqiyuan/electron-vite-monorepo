@@ -1,6 +1,6 @@
-import { BrowserWindow } from "electron";
-import { join } from "path";
-import { isProd, isDev } from '/@/utils/'
+import { BrowserWindow } from 'electron'
+import { join } from 'node:path'
+import { isDev, isProd } from '/@/utils/'
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -9,44 +9,44 @@ async function createWindow() {
     webPreferences: {
       // https://www.electronjs.org/docs/latest/api/webview-tag#warning
       webviewTag: false,
-      preload: isProd ? join(__dirname, "./preload/index.cjs") : join(__dirname, "../../preload/dist/index.cjs"),
+      preload: isProd ? join(__dirname, './preload/index.cjs') : join(__dirname, '../../preload/dist/index.cjs'),
     },
-  });
+  })
 
   /**
    * @see https://github.com/electron/electron/issues/25012
    */
-  browserWindow.on("ready-to-show", () => {
-    browserWindow?.show();
+  browserWindow.on('ready-to-show', () => {
+    browserWindow?.show()
 
     if (isDev) {
-      browserWindow?.webContents.openDevTools({ mode: "detach" });
+      browserWindow?.webContents.openDevTools({ mode: 'detach' })
     }
-  });
+  })
 
-  const pageUrl =
-    isDev && import.meta.env.VITE_DEV_SERVER_URL !== undefined
+  const pageUrl
+    = isDev && import.meta.env.VITE_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_DEV_SERVER_URL
-      : `file://${join(__dirname, "./web/index.html")}`;
+      : `file://${join(__dirname, './web/index.html')}`
 
-  await browserWindow.loadURL(pageUrl);
+  await browserWindow.loadURL(pageUrl)
 
-  return browserWindow;
+  return browserWindow
 }
 
 /**
  * 恢复现有的浏览器窗口或创建新的浏览器窗口
  */
 export async function restoreOrCreateWindow() {
-  let window = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed());
+  let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed())
 
   if (window === undefined) {
-    window = await createWindow();
+    window = await createWindow()
   }
 
   if (window.isMinimized()) {
-    window.restore();
+    window.restore()
   }
 
-  window.focus();
+  window.focus()
 }
