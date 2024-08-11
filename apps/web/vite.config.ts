@@ -1,7 +1,6 @@
 /* eslint-env node */
 
 import { join } from 'node:path'
-import process from 'node:process'
 import vue from '@vitejs/plugin-vue'
 import type { UserConfig } from 'vite'
 import { chrome } from '../electron/.electron-vendors.cache.json'

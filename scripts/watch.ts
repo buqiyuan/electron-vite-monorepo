@@ -3,7 +3,6 @@
 import type { ChildProcess } from 'node:child_process'
 import { spawn } from 'node:child_process'
 import path from 'node:path'
-import process from 'node:process'
 import { build, createServer } from 'vite'
 import type { LogLevel, ViteDevServer } from 'vite'
 import electronPath from 'electron'

@@ -1,5 +1,4 @@
 import { join } from 'node:path'
-import process from 'node:process'
 import dts from 'vite-plugin-dts'
 import type { UserConfig } from 'vite'
 import { chrome } from '../electron/.electron-vendors.cache.json'

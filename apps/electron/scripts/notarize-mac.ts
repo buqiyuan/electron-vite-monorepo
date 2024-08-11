@@ -1,4 +1,3 @@
-import process from 'node:process'
 import { notarize } from '@electron/notarize'
 import type { AfterPackContext } from 'electron-builder'
 

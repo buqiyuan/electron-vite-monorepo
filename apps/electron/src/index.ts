@@ -1,7 +1,6 @@
 import './ipc'
 import { restoreOrCreateWindow } from '/@/mainWindow'
 import { app } from 'electron'
-import process from 'node:process'
 
 /**
  * 防止多实例

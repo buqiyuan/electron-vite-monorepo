@@ -1,5 +1,4 @@
 import { join } from 'node:path'
-import process from 'node:process'
 import type { UserConfig } from 'vite'
 import { node } from './.electron-vendors.cache.json'
 

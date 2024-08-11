@@ -2,7 +2,6 @@
  * @module preload
  */
 
-import process from 'node:process'
 import { contextBridge } from 'electron'
 import { IPCRenderer } from './ipcRenderer'
 import type { MainMessage, RenderMessage } from './types/'
