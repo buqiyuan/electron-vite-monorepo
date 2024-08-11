@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import { build, createServer, } from 'vite';
-import type { LogLevel, ViteDevServer } from 'vite';
-import electronPath from 'electron';
-import { ChildProcess, spawn } from 'node:child_process';
-import path from 'node:path';
-import { generateAsync } from '@repo/dts-for-context-bridge'
-
+import type { ChildProcess } from 'node:child_process'
+import { spawn } from 'node:child_process'
+import path from 'node:path'
+import process from 'node:process'
+import { build, createServer } from 'vite'
+import type { LogLevel, ViteDevServer } from 'vite'
+import electronPath from 'electron'
 
 /** @type 'production' | 'development'' */
-const mode = (process.env.MODE = process.env.MODE || 'development');
+const mode = (process.env.MODE = process.env.MODE || 'development')
 
-const logLevel: LogLevel = 'warn';
+const logLevel: LogLevel = 'warn'
 
 /**
  * 设置`main`包的监听器
@@ -20,9 +20,9 @@ const logLevel: LogLevel = 'warn';
  * 需要从{@link import('vite').ViteDevServer.resolvedUrls}设置`VITE_DEV_SERVER_URL`环境变量。
  */
 function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
-  process.env.VITE_DEV_SERVER_URL = resolvedUrls.local[0];
+  process.env.VITE_DEV_SERVER_URL = resolvedUrls?.local[0]
 
-  let electronApp: ChildProcess | null = null;
+  let electronApp: ChildProcess | null = null
 
   return build({
     mode,
@@ -41,25 +41,25 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
         writeBundle() {
           /** 如果进程已存在，则杀死electron */
           if (electronApp !== null) {
-            electronApp.removeListener('exit', process.exit);
-            electronApp.kill('SIGINT');
-            electronApp = null;
+            electronApp.removeListener('exit', process.exit)
+            electronApp.kill('SIGINT')
+            electronApp = null
           }
 
-          console.log('Reloading electron app...', String(electronPath));
+          console.log('Reloading electron app...', String(electronPath))
           /** 启动新的electron进程 */
           electronApp = spawn(String(electronPath), ['--inspect', '.'], {
             stdio: 'inherit',
             // 设置工作目录
             cwd: path.resolve(__dirname, '../apps/electron'),
-          });
+          })
 
           /** 当应用程序退出时停止监听脚本 */
-          electronApp.addListener('exit', process.exit);
+          electronApp.addListener('exit', process.exit)
         },
       },
     ],
-  });
+  })
 }
 
 /**
@@ -84,19 +84,13 @@ function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
       {
         name: 'reload-page-on-preload-package-change',
         writeBundle() {
-          // Generating exposedInMainWorld.d.ts when preload package is changed.
-          generateAsync({
-            input: "apps/preload/src/**/*.ts",
-            output: "apps/preload/exposedInMainWorld.d.ts",
-          });
-
           ws.send({
             type: 'full-reload',
-          });
+          })
         },
       },
     ],
-  });
+  })
 }
 
 /**
@@ -104,14 +98,13 @@ function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
  * 因为{@link setupMainPackageWatcher}和{@link setupPreloadPackageWatcher}
  * 依赖于开发服务器的属性
  */
-(async () => {
+; (async () => {
   const rendererWatchServer = await createServer({
     mode,
     logLevel,
     configFile: 'apps/web/vite.config.ts',
-  }).then(s => s.listen());
+  }).then(s => s.listen())
 
-  await setupPreloadPackageWatcher(rendererWatchServer);
-  await setupMainPackageWatcher(rendererWatchServer);
-
-})();
+  await setupPreloadPackageWatcher(rendererWatchServer)
+  await setupMainPackageWatcher(rendererWatchServer)
+})()
