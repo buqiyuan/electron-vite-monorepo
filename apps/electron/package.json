@@ -21,8 +21,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:pkg": "npx tsx scripts/build.ts",
-    "compile": "cross-env MODE=production npm run build && npm run build:pkg",
+    "build:app": "npx tsx scripts/build.ts",
+    "compile": "npm run build && npm run build:app",
     "lint": "eslint . --ext js,ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 electron ../../scripts/update-electron-vendors.js"

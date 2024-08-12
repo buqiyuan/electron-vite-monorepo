@@ -15,3 +15,15 @@ Uses:
 pnpm install
 pnpm run dev
 ```
+
+## Build
+
+```bash
+pnpm build
+```
+
+# Pack App
+
+```bash
+pnpm build:app
+```

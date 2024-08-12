@@ -22,7 +22,7 @@
     "build": "turbo run build",
     "dev:p": "turbo run dev --parallel",
     "compile": "turbo run compile",
-    "build:pkg": "pnpm -F electron-main run build:pkg",
+    "build:app": "pnpm -F electron-main run build:app",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
