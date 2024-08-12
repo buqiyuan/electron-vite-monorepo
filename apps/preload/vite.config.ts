@@ -33,7 +33,7 @@ const config: UserConfig = {
     reportCompressedSize: false,
   },
 
-  plugins: [dts({ rollupTypes: true })],
+  plugins: [dts()],
 }
 
 export default config

@@ -43,7 +43,7 @@ export class IPCRenderer<
     name: T,
     fn: (...args: Parameters<BackgroundMessageType[T]>) => void,
   ): () => void => {
-    this.listeners[name] = this.listeners[name] || []
+    this.listeners[name] ??= []
 
     this.listeners[name].push(fn)
 

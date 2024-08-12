@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
     "baseUrl": ".",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
       "/@/*": [
         "./src/*"
       ]
     },
     "types": [
-      "node"
+      "node",
+      "vite/client"
     ],
     "strict": true,
     "sourceMap": false,

@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [test]
+    branches: [main]
 #   tags:
 #     - 'v*.*.*'
 jobs:
