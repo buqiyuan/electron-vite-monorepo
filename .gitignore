@@ -32,3 +32,7 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# vitepress build output
+.vitepress/dist
+.vitepress/cache

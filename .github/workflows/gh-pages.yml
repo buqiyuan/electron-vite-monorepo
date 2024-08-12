@@ -1,0 +1,43 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        working-directory: ./apps/docs
+        run: pnpm install
+
+      - name: Build
+        working-directory: ./apps/docs
+        run: pnpm run build
+        env:
+          FORCE_COLOR: 2
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          publish_dir: ./apps/docs/.vitepress/dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: Update ghPages
+          force_orphan: true
