@@ -73,7 +73,7 @@ const options: Configuration = {
   publish: [
     {
       provider: 'github',
-      releaseType: 'prerelease',
+      releaseType: 'draft',
       // private: true,
     },
   ],
