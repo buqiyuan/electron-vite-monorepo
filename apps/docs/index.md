@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "Electron Vite Monorepo"
-  text: "Electron Turborepo monorepo with Vue, Vite boilerplate"
-  tagline: My great project tagline
+  text: ""
+  tagline: Electron Turborepo monorepo with Vue, Vite boilerplate
   image:
     src: /vite.png
     alt: VitePress

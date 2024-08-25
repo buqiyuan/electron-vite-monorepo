@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "compilerOptions": {
+    "builder": "swc",
+    "typeCheck": true
+  },
+  "sourceRoot": "src"
+}
