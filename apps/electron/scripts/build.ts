@@ -1,11 +1,13 @@
-import { cpSync } from 'node:fs'
-import process, { exit, platform } from 'node:process'
-import path from 'node:path'
-import { Platform, build } from 'electron-builder'
 import type { Configuration } from 'electron-builder'
+import { cpSync } from 'node:fs'
+import path from 'node:path'
+import process, { exit, platform } from 'node:process'
+import { build, Platform } from 'electron-builder'
 
-const version = process.env.npm_package_version
-console.log('版本号：', version)
+const version = process.env.VITE_APP_VERSION
+const isDev = process.env.NODE_ENV === 'development'
+console.log('是否是测试环境：', isDev)
+console.log('APP 版本号：', version)
 
 const workDir = path.join(__dirname, '../')
 
@@ -19,11 +21,19 @@ const options: Configuration = {
   productName: 'ElectronApp',
   copyright: 'ElectronApp',
   asar: true,
+  extraMetadata: {
+    version,
+    name: 'ElectronViteApp',
+    main: 'dist/main.cjs',
+  },
   directories: {
     output: 'out',
     buildResources: 'buildResources',
   },
-  files: ['dist'],
+  files: [
+    'dist',
+    'resources',
+  ],
   protocols: {
     name: 'Deeplink Example',
     // Don't forget to set `MimeType: "x-scheme-handler/deeplink"` for `linux.desktop` entry!
