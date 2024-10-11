@@ -5,6 +5,9 @@ node_modules
 .pnp
 .pnp.js
 dist/
+dist-vite/
+**/components.d.ts
+**/auto-imports.d.ts
 
 # testing
 coverage
@@ -36,3 +39,5 @@ yarn-error.log*
 # vitepress build output
 .vitepress/dist
 .vitepress/cache
+
+vite.config.ts.*
