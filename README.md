@@ -22,8 +22,14 @@ pnpm run dev
 pnpm build
 ```
 
-# Pack App
+# Pack App (Dev)
 
 ```bash
-pnpm build:app
+pnpm pack:dev
+```
+
+# Pack App (Prod)
+
+```bash
+pnpm pack:prod
 ```
