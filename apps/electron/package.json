@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/buqiyuan/electron-vite-monorepo.git"
   },
-  "main": "dist/main.cjs",
+  "main": "dist-vite/index.cjs",
   "engines": {
     "node": ">=v16.13",
     "npm": ">=8.1"
@@ -31,14 +31,14 @@
   "devDependencies": {
     "@electron/notarize": "^2.5.0",
     "@repo/electron-preload": "workspace:*",
-    "@types/node": "^22.2.0",
-    "electron": "32.2.0",
-    "electron-builder": "25.1.7",
+    "@types/node": "^22.10.5",
+    "electron": "33.3.1",
+    "electron-builder": "25.1.8",
     "electron-updater": "6.3.9",
-    "terser-webpack-plugin": "^5.3.10",
-    "typescript": "5.6.3",
-    "vite": "5.4.8",
-    "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
+    "terser-webpack-plugin": "^5.3.11",
+    "typescript": "5.7.3",
+    "vite": "6.0.7",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   }
 }

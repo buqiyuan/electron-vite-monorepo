@@ -1,4 +1,5 @@
 import type { Configuration } from 'electron-builder'
+import type { CopySyncOptions } from 'node:fs'
 import { cpSync } from 'node:fs'
 import path from 'node:path'
 import process, { exit, platform } from 'node:process'
@@ -6,28 +7,40 @@ import { build, Platform } from 'electron-builder'
 
 const version = process.env.VITE_APP_VERSION
 const isDev = process.env.NODE_ENV === 'development'
-console.log('是否是测试环境：', isDev)
+const appName = isDev ? 'ElectronAppDev' : 'ElectronApp'
+const appId = isDev ? 'com.electron.app' : 'com.electron-dev.app'
+const shortcutName = isDev ? 'Electron App Dev' : 'Electron App'
+
+console.log('是否是测试环境：', isDev, appName)
 console.log('APP 版本号：', version)
 
 const workDir = path.join(__dirname, '../')
 
-cpSync(path.join(workDir, '../web/dist'), path.join(workDir, './dist/web'), {
+const copySyncOptions: CopySyncOptions = {
   recursive: true,
-})
-cpSync(path.join(workDir, '../preload/dist'), path.join(workDir, './dist/preload'), { recursive: true })
+  /**
+   * 过滤 source map 文件
+   */
+  filter: src => !src.endsWith('.map') && !src.endsWith('.d.ts'),
+}
+
+cpSync(path.join(workDir, '../web/dist'), path.join(workDir, './dist/web'), copySyncOptions)
+cpSync(path.join(workDir, '../preload/dist'), path.join(workDir, './dist/preload'), copySyncOptions)
 
 const options: Configuration = {
-  appId: 'com.electron.app',
-  productName: 'ElectronApp',
-  copyright: 'ElectronApp',
+  appId,
+  productName: appName,
+  copyright: appName,
+  // eslint-disable-next-line no-template-curly-in-string
+  artifactName: '${productName}_${arch}_${version}.${ext}',
   asar: true,
   extraMetadata: {
     version,
-    name: 'ElectronViteApp',
+    name: appName,
     main: 'dist/main.cjs',
   },
   directories: {
-    output: 'out',
+    output: '../../out',
     buildResources: 'buildResources',
   },
   files: [
@@ -35,9 +48,8 @@ const options: Configuration = {
     'resources',
   ],
   protocols: {
-    name: 'Deeplink Example',
-    // Don't forget to set `MimeType: "x-scheme-handler/deeplink"` for `linux.desktop` entry!
-    schemes: ['deeplink'],
+    name: 'ElectronApp Example',
+    schemes: ['electronapp'],
   },
 
   // "store” | “normal” | "maximum". - For testing builds, use 'store' to reduce build time significantly.
@@ -51,6 +63,7 @@ const options: Configuration = {
   buildDependenciesFromSource: false,
 
   win: {
+    icon: 'icon.ico',
     target: [
       {
         target: 'nsis',
@@ -58,12 +71,26 @@ const options: Configuration = {
       },
     ],
   },
+  nsis: {
+    oneClick: false,
+    perMachine: true,
+    allowToChangeInstallationDirectory: true,
+    createDesktopShortcut: true,
+    createStartMenuShortcut: true,
+    shortcutName,
+  },
 
   dmg: {
     sign: true,
   },
   mac: {
-    target: ['dmg', 'zip'],
+    target: [
+      {
+        target: 'default',
+        arch: ['x64', 'arm64'],
+      },
+    ],
+    icon: 'icon.icns',
     hardenedRuntime: true,
     gatekeeperAssess: false,
     entitlements: 'buildResources/entitlements.mac.plist',
@@ -103,7 +130,7 @@ build({
 })
   .then((result) => {
     console.log(JSON.stringify(result))
-    const outDir = path.join(workDir, 'out')
+    const outDir = path.join(workDir, options.directories!.output!)
     console.log('\x1B[32m', `打包完成🎉🎉🎉你要的都在 ${outDir} 目录里🤪🤪🤪`)
   })
   .catch((error) => {

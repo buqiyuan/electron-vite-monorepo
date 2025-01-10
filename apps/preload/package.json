@@ -33,6 +33,6 @@
     "electron": "^22.3.27"
   },
   "devDependencies": {
-    "vite-plugin-dts": "^4.0.2"
+    "vite-plugin-dts": "^4.5.0"
   }
 }

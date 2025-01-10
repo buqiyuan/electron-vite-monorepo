@@ -1,16 +1,24 @@
 #!/usr/bin/env node
 
 import type { ChildProcess } from 'node:child_process'
+import type { LogLevel, ViteDevServer } from 'vite'
 import { spawn } from 'node:child_process'
 import path from 'node:path'
-import { build, createServer } from 'vite'
-import type { LogLevel, ViteDevServer } from 'vite'
 import electronPath from 'electron'
+import { build, createServer } from 'vite'
 
 /** @type 'production' | 'development'' */
 const mode = (process.env.MODE = process.env.MODE || 'development')
 
 const logLevel: LogLevel = 'warn'
+
+const argv = process.argv.slice(2)
+// 解析命令行参数
+const args = argv.reduce((acc, arg) => {
+  const [key, value] = arg.split('=')
+  acc[key] = value
+  return acc
+}, {} as Record<string, string>)
 
 /**
  * 设置`main`包的监听器
@@ -32,7 +40,7 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
        * 设置为{}以启用rollup监听器
        * @see https://vitejs.dev/config/build-options.html#build-watch
        */
-      watch: {},
+      watch: Reflect.has(args, '--watch') ? {} : null,
     },
     plugins: [
       {
@@ -48,7 +56,6 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
           console.log('Reloading electron app...', String(electronPath))
           /** 启动新的electron进程 */
           electronApp = spawn(String(electronPath), ['--inspect', '.'], {
-            // stdio: 'inherit',
             // 设置工作目录
             cwd: path.resolve(__dirname, '../apps/electron'),
           })
@@ -59,12 +66,7 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
 
           electronApp.stderr?.on('data', (data) => {
             const str = data.toString()
-            // 忽略一些无关紧要的错误
-            const ignoreErrors = [
-              'Secure coding is not enabled for restorable state',
-              'CoreText note: Client requested name',
-              'Request Autofill.enable failed',
-            ]
+            const ignoreErrors = ['Secure coding is not enabled for restorable state', 'CoreText note: Client requested name']
             if (ignoreErrors.some(err => str.includes(err))) {
               return
             }
@@ -115,7 +117,7 @@ function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
  * 因为{@link setupMainPackageWatcher}和{@link setupPreloadPackageWatcher}
  * 依赖于开发服务器的属性
  */
-; (async () => {
+(async () => {
   const rendererWatchServer = await createServer({
     mode,
     logLevel,

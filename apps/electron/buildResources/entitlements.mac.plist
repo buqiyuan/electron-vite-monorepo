@@ -1,10 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
-    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+<dict>
+    <!-- 启用文件读写权限 -->
+    <key>com.apple.security.files.bookmarks.app-scope</key>
     <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+    <key>com.apple.security.files.documents.read-write</key>
+    <true/>
+    <key>com.apple.security.files.desktop.read-write</key>
+    <true/>
+    <key>com.apple.security.files.home-relative-path.read-write</key>
+    <true/>
+
+    <!-- 启用相机、麦克风、照片库等权限 -->
+    <key>com.apple.security.device.camera</key>
+    <true/>
+    <key>com.apple.security.device.usb</key>
+    <true/>
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    <key>com.apple.security.device.microphone</key>
+    <true/>
+    <key>com.apple.security.personal-information.photos-library</key>
+    <true/>
+
+    <!-- 启用访问网络和蓝牙 -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.network.server</key>
+    <true/>
+    <key>com.apple.security.bluetooth</key>
+    <true/>
+
+    <!-- 启用 Apple Events -->
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+
+    <!-- 启用访问位置服务 -->
+    <key>com.apple.security.personal-information.location</key>
+    <true/>
+
+    <!-- 启用访问日历和提醒事项 -->
+    <key>com.apple.security.personal-information.calendars</key>
+    <true/>
+    <key>com.apple.security.personal-information.reminders</key>
+    <true/>
+
+    <!-- 启用访问联系人 -->
+    <key>com.apple.security.personal-information.addressbook</key>
+    <true/>
+
+    <!-- 允许应用程序使用 JIT 编译和未签名的可执行内存 -->
     <key>com.apple.security.cs.allow-jit</key>
     <true/>
-  </dict>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+
+    <!-- 启用访问 Apple Music 和媒体库 -->
+    <key>com.apple.security.personal-information.music-library</key>
+    <true/>
+    <key>com.apple.security.personal-information.media-library</key>
+    <true/>
+
+</dict>
 </plist>
