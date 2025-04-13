@@ -13,7 +13,7 @@ const electronRelease = process.versions
 const node = electronRelease.node.split('.')[0]
 const chrome = electronRelease.v8.split('.').splice(0, 2).join('')
 
-const browserslistrcPath = path.resolve(process.cwd(), '../web', '.browserslistrc')
+const browserslistrcPath = path.resolve(__dirname, '../../web', '.browserslistrc')
 
-writeFileSync('./.electron-vendors.cache.json', JSON.stringify({ chrome, node }))
+writeFileSync(path.join(__dirname, '../.electron-vendors.cache.json'), JSON.stringify({ chrome, node }))
 writeFileSync(browserslistrcPath, `Chrome ${chrome}`, 'utf8')

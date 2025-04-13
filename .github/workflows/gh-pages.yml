@@ -21,8 +21,11 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
+
+      - name: Configure Git for HTTPS
+        run: git config --global url."https://${{ secrets.GH_TOKEN }}@github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
         working-directory: ./apps/docs

@@ -15,8 +15,7 @@
   },
   "main": "dist-vite/index.cjs",
   "engines": {
-    "node": ">=v16.13",
-    "npm": ">=8.1"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "bundle": "npx rimraf ./dist && webpack --config webpack.config.js",
@@ -26,19 +25,21 @@
     "pack:dev": "pnpm build:dev && dotenvx run -f .env.development -- pnpm pack:app",
     "pack:prod": "pnpm build:prod && dotenvx run -f .env.production -- pnpm pack:app",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 electron ../../scripts/update-electron-vendors.js"
+    "install:electron": "cross-env ELECTRON_GET_USE_PROXY=true node node_modules/electron/install.js",
+    "gen:vendors": "cross-env ELECTRON_RUN_AS_NODE=1 electron ./scripts/update-electron-vendors.js",
+    "postinstall": "pnpm install:electron && pnpm gen:vendors"
   },
   "devDependencies": {
-    "@electron/notarize": "^2.5.0",
+    "@electron/notarize": "^3.0.1",
     "@repo/electron-preload": "workspace:*",
-    "@types/node": "^22.10.5",
-    "electron": "33.3.1",
-    "electron-builder": "25.1.8",
-    "electron-updater": "6.3.9",
-    "terser-webpack-plugin": "^5.3.11",
-    "typescript": "5.7.3",
-    "vite": "6.0.7",
-    "webpack": "^5.97.1",
+    "@types/node": "^22.14.1",
+    "electron": "35.1.4",
+    "electron-builder": "26.0.12",
+    "electron-updater": "6.6.2",
+    "terser-webpack-plugin": "^5.3.14",
+    "typescript": "5.8.3",
+    "vite": "6.2.6",
+    "webpack": "^5.99.5",
     "webpack-cli": "^6.0.1"
   }
 }

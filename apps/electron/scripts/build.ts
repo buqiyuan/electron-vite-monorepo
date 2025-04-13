@@ -100,11 +100,6 @@ const options: Configuration = {
   },
 
   linux: {
-    desktop: {
-      StartupNotify: 'false',
-      Encoding: 'UTF-8',
-      MimeType: 'x-scheme-handler/deeplink',
-    },
     target: ['AppImage', 'rpm', 'deb'],
   },
   publish: [
