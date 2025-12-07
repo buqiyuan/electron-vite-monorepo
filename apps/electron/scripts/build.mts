@@ -2,7 +2,7 @@ import type { Configuration } from 'electron-builder'
 import type { CopySyncOptions } from 'node:fs'
 import { cpSync } from 'node:fs'
 import path from 'node:path'
-import process, { exit, platform } from 'node:process'
+import process, { exit } from 'node:process'
 import { build, Platform } from 'electron-builder'
 
 const version = process.env.VITE_APP_VERSION
@@ -14,7 +14,7 @@ const shortcutName = isDev ? 'Electron App Dev' : 'Electron App'
 console.log('是否是测试环境：', isDev, appName)
 console.log('APP 版本号：', version)
 
-const workDir = path.join(__dirname, '../')
+const workDir = path.join(import.meta.dirname, '../')
 
 const copySyncOptions: CopySyncOptions = {
   recursive: true,
@@ -37,7 +37,7 @@ const options: Configuration = {
   extraMetadata: {
     version,
     name: appName,
-    main: 'dist/main.cjs',
+    main: 'dist/main.mjs',
   },
   directories: {
     output: '../../out',
@@ -111,15 +111,8 @@ const options: Configuration = {
   ],
 }
 
-// 要打包的目标平台
-const targetPlatform: Platform = {
-  darwin: Platform.MAC,
-  win32: Platform.WINDOWS,
-  linux: Platform.LINUX,
-}[platform]
-
 build({
-  targets: targetPlatform.createTarget(),
+  targets: Platform.current().createTarget(),
   config: options,
   publish: process.env.CI ? 'always' : 'never',
 })

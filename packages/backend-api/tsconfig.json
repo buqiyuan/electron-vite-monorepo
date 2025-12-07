@@ -4,26 +4,20 @@
     "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "paths": {
-      "/@/*": [
-        "./src/*"
-      ]
-    },
+    "paths": {},
     "types": [
       "node",
       "vite/client"
     ],
     "strict": true,
-    "noImplicitAny": false,
     "sourceMap": false,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "isolatedModules": true,
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts",
-    "./types"
+    "*.ts",
+    "src/**/*.ts"
   ],
   "exclude": [
     "**/*.spec.ts",

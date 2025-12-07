@@ -2,8 +2,7 @@ import type { UserConfig } from 'vite'
 import { join } from 'node:path'
 import { node } from './.electron-vendors.cache.json'
 
-const PACKAGE_ROOT = __dirname
-// const PROJECT_ROOT = join(PACKAGE_ROOT, '../..')
+const PACKAGE_ROOT = import.meta.dirname
 
 const config: UserConfig = {
   envDir: PACKAGE_ROOT,
@@ -24,17 +23,18 @@ const config: UserConfig = {
       entry: {
         index: join(PACKAGE_ROOT, 'src/index.ts'),
       },
-      formats: ['cjs'],
+      formats: ['es'],
     },
     rollupOptions: {
       output: {
-        entryFileNames: '[name].cjs',
-        chunkFileNames: '[name].cjs',
+        entryFileNames: '[name].mjs',
+        chunkFileNames: '[name].mjs',
       },
     },
     emptyOutDir: true,
     reportCompressedSize: false,
   },
+  plugins: [],
 }
 
 export default config

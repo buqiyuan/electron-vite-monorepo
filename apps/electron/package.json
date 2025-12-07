@@ -1,5 +1,6 @@
 {
   "name": "electron-main",
+  "type": "module",
   "version": "0.2.0",
   "private": false,
   "description": "Electron main process",
@@ -13,12 +14,12 @@
     "type": "git",
     "url": "https://github.com/buqiyuan/electron-vite-monorepo.git"
   },
-  "main": "dist-vite/index.cjs",
+  "main": "dist-vite/index.mjs",
   "engines": {
     "node": ">=22.0.0"
   },
   "scripts": {
-    "bundle": "npx rimraf ./dist && webpack --config webpack.config.js",
+    "bundle": "npx rimraf ./dist && webpack --config webpack.config.cjs",
     "build:dev": "vite build --mode development && pnpm bundle",
     "build:prod": "vite build && pnpm bundle",
     "pack:app": "npx tsx scripts/build.ts",
@@ -26,20 +27,21 @@
     "pack:prod": "pnpm build:prod && dotenvx run -f .env.production -- pnpm pack:app",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "install:electron": "cross-env ELECTRON_GET_USE_PROXY=true node node_modules/electron/install.js",
-    "gen:vendors": "cross-env ELECTRON_RUN_AS_NODE=1 electron ./scripts/update-electron-vendors.js",
+    "gen:vendors": "cross-env ELECTRON_RUN_AS_NODE=1 electron ./scripts/update-electron-vendors.mjs",
     "postinstall": "pnpm install:electron && pnpm gen:vendors"
   },
   "devDependencies": {
-    "@electron/notarize": "^3.0.1",
+    "@electron/notarize": "^3.1.1",
     "@repo/electron-preload": "workspace:*",
     "@types/node": "^22.14.1",
-    "electron": "35.1.4",
-    "electron-builder": "26.0.12",
+    "electron": "39.2.6",
+    "electron-builder": "26.3.4",
+    "electron-store": "^11.0.2",
     "electron-updater": "6.6.2",
-    "terser-webpack-plugin": "^5.3.14",
-    "typescript": "5.8.3",
-    "vite": "6.2.6",
-    "webpack": "^5.99.5",
+    "terser-webpack-plugin": "^5.3.15",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "webpack": "^5.103.0",
     "webpack-cli": "^6.0.1"
   }
 }

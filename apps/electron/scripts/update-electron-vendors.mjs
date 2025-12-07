@@ -4,16 +4,15 @@
  *  ELECTRON_RUN_AS_NODE=1 electron scripts/update-electron-vendors.js
  */
 
-const { writeFileSync } = require('node:fs')
-const path = require('node:path')
-const process = require('node:process')
+import { writeFileSync } from 'node:fs'
+import path from 'node:path'
 
 const electronRelease = process.versions
 
 const node = electronRelease.node.split('.')[0]
 const chrome = electronRelease.v8.split('.').splice(0, 2).join('')
 
-const browserslistrcPath = path.resolve(__dirname, '../../web', '.browserslistrc')
+const browserslistrcPath = path.resolve(import.meta.dirname, '../../web', '.browserslistrc')
 
-writeFileSync(path.join(__dirname, '../.electron-vendors.cache.json'), JSON.stringify({ chrome, node }))
+writeFileSync(path.join(import.meta.dirname, '../.electron-vendors.cache.json'), JSON.stringify({ chrome, node }))
 writeFileSync(browserslistrcPath, `Chrome ${chrome}`, 'utf8')

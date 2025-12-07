@@ -1,6 +1,6 @@
-import './ipc'
-import { restoreOrCreateWindow } from '/@/mainWindow'
 import { app } from 'electron'
+import { restoreOrCreateWindow } from './modules/app/mainWindow'
+import './ipc'
 
 /**
  * 防止多实例
