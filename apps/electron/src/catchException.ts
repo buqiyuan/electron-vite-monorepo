@@ -1,5 +1,7 @@
 import { app, dialog } from 'electron'
 
+globalThis.__dirname ||= import.meta.dirname
+
 // Expose the dev build version when running unpackaged so logs stay accurate.
 if (!app.isPackaged) {
   app.getVersion = () => import.meta.env.VITE_APP_VERSION

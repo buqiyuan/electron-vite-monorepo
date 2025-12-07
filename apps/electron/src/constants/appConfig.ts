@@ -1,5 +1,5 @@
-import { join } from 'node:path'
 import { app } from 'electron'
+import { join } from 'node:path'
 import { isPackaged } from './common'
 
 const sessionDir = app.getPath('sessionData')
@@ -23,7 +23,7 @@ export const appConfig = {
   get webBaseURL() {
     return !isPackaged && import.meta.env.VITE_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_DEV_SERVER_URL
-      : `file://${join(__dirname, './web/index.html')}`
+      : `file://${join(import.meta.dirname, './web/index.html')}`
   },
 } as const
 
