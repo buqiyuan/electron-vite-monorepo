@@ -9,13 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "vue": "^3.5.25"
   },
   "devDependencies": {
     "@repo/electron-preload": "workspace:*",
-    "@vitejs/plugin-vue": "^5.2.3",
-    "typescript": "^5.8.3",
-    "vite": "^6.2.6",
-    "vue-tsc": "^2.2.8"
+    "@repo/shared-types": "workspace:*",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "typescript": "catalog:",
+    "unplugin-auto-import": "^20.3.0",
+    "unplugin-vue-components": "^30.0.0",
+    "vite": "catalog:",
+    "vite-plugin-vue-devtools": "^8.0.5",
+    "vue-tsc": "^3.1.6"
   }
 }

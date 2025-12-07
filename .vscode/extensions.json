@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    // Vue 3 的语言支持
+    "Vue.volar",
+    // 将 ESLint JavaScript 集成到 VS Code 中。
+    "dbaeumer.vscode-eslint",
+    // 支持 dotenv 文件语法
+    "mikestead.dotenv",
+    // 源代码的拼写检查器
+    "streetsidesoftware.code-spell-checker",
+    // Tailwind CSS 的官方 VS Code 插件
+    "bradlc.vscode-tailwindcss",
+    // 在 package.json 文件中显示可用更新
+    "codeandstuff.package-json-upgrade"
+  ],
+  "unwantedRecommendations": [
+    // 和 volar 冲突
+    "octref.vetur"
+  ]
+}

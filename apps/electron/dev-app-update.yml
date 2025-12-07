@@ -1,2 +1,8 @@
-provider: generic
-url: 'http://localhost:8080'
+# provider: generic
+# url: 'http://localhost:8080'
+
+provider: github
+owner: buqiyuan
+repo: electron-vite-monorepo
+releaseType: release # 如果构建脚本发布成 Draft，可保留；否则设为 release/latest
+private: false # 若仓库私有则改为 true 并提供 token

@@ -1,11 +1,17 @@
-import { app } from 'electron'
+import { createHash } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import { userInfo } from 'node:os'
 
-/** 是否处于开发环境 */
-export const isDev = import.meta.env.DEV
-/** 是否处于生产环境 */
-export const isProd = import.meta.env.PROD
-/** 是否处于打包状态 */
-export const isPackaged = app.isPackaged
+/** Calculate SHA512 hash of a file */
+export async function calculateFileHash(filePath: string) {
+  const fileBuffer = await readFile(filePath)
+  const hashSum = await createHash('sha512')
+  hashSum.update(fileBuffer)
 
-export const isMac = process.platform === 'darwin'
-export const isWindows = process.platform === 'win32'
+  return hashSum.digest('hex')
+}
+
+// Get system username
+export function getSystemUserName() {
+  return userInfo().username
+}

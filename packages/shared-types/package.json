@@ -1,0 +1,19 @@
+{
+  "name": "@repo/shared-types",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./updater": {
+      "types": "./src/updater.ts",
+      "default": "./src/updater.ts"
+    }
+  },
+  "devDependencies": {
+    "electron-updater": "6.6.2"
+  }
+}

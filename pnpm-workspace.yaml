@@ -1,3 +1,10 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+# Define a catalog of version ranges.
+catalog:
+  axios: ^1.13.2
+  typescript: ^5.9.3
+  vite: ^7.2.6
+  vite-plugin-dts: 4.5.4

@@ -1,8 +1,9 @@
 {
   "name": "electron-vite-monorepo",
+  "type": "module",
   "version": "0.0.0",
   "private": false,
-  "packageManager": "pnpm@10.6.0",
+  "packageManager": "pnpm@10.18.3",
   "author": {
     "name": "buqiyuan",
     "email": "1743369777@qq.com",
@@ -14,16 +15,16 @@
     "url": "https://github.com/buqiyuan/electron-vite-monorepo.git"
   },
   "engines": {
-    "pnpm": ">=10.0.0",
-    "node": ">=22.0.0"
+    "pnpm": ">=10.18.3",
+    "node": ">=22.20.0"
   },
   "volta": {
-    "node": "22.14.0",
-    "pnpm": "10.6.1"
+    "node": "22.20.0",
+    "pnpm": "10.18.3"
   },
   "scripts": {
-    "dev": "tsx scripts/watch.ts",
-    "dev:watch": "tsx scripts/watch.ts --watch",
+    "dev": "tsx scripts/watch.ts --watch",
+    "start": "tsx scripts/watch.ts",
     "dev:pkg": "pnpm -F \"./packages/**\" dev",
     "build:pkg": "pnpm -F \"./packages/**\" build",
     "build": "turbo run build",
@@ -39,32 +40,27 @@
     "reinstall": "npx rimraf pnpm-lock.yaml && pnpm clean:lib"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.12.0",
-    "@dotenvx/dotenvx": "^1.39.1",
+    "@antfu/eslint-config": "^6.4.2",
+    "@dotenvx/dotenvx": "^1.51.1",
     "@types/node": "^22.14.1",
-    "@unocss/eslint-plugin": "^66.0.0",
-    "cross-env": "^7.0.3",
-    "eslint": "9.24.0",
-    "eslint-plugin-format": "^1.0.1",
-    "lint-staged": "^15.5.1",
-    "rimraf": "6.0.1",
-    "simple-git-hooks": "^2.12.1",
-    "tsx": "^4.19.3",
-    "turbo": "^2.5.0",
-    "vite": "^6.2.6"
+    "@unocss/eslint-plugin": "^66.5.10",
+    "axios": "^1.13.2",
+    "cross-env": "^10.1.0",
+    "eslint": "9.39.1",
+    "eslint-plugin-format": "^1.1.0",
+    "lint-staged": "^16.2.7",
+    "rimraf": "6.1.2",
+    "simple-git-hooks": "^2.13.1",
+    "tsx": "^4.21.0",
+    "turbo": "^2.6.3",
+    "vite": "^7.2.6",
+    "vite-plugin-dts": "^4.5.4"
   },
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {
-        "eslint": "*"
       }
     },
     "overrides": {}
-  },
-  "simple-git-hooks": {
-    "pre-commit": "pnpm lint-staged"
-  },
-  "lint-staged": {
-    "*": "eslint --fix"
   }
 }

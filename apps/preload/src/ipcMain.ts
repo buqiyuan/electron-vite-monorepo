@@ -1,5 +1,5 @@
-import { BrowserWindow, ipcMain } from 'electron'
 import type { IpcMainInvokeEvent } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
 import type { MessageObj } from './types/'
 
 export class IPCMain<
@@ -7,7 +7,7 @@ export class IPCMain<
   BackgroundMessageType extends MessageObj<BackgroundMessageType>,
 > {
   private channel: string
-  private listeners: Partial<Record<keyof MessageType, any>> = {}
+  private listeners: Partial<{ [K in keyof MessageType]: (event: IpcMainInvokeEvent, ...args: Parameters<MessageType[K]>) => ReturnType<MessageType[K]> }> = {}
 
   constructor(channel: string = 'IPC-bridge') {
     this.channel = channel
@@ -17,11 +17,10 @@ export class IPCMain<
 
   on<T extends keyof MessageType>(
     name: T,
-    fn: (...args: Parameters<MessageType[T]>) => ReturnType<MessageType[T]>,
+    fn: (event: IpcMainInvokeEvent, ...args: Parameters<MessageType[T]>) => ReturnType<MessageType[T]>,
   ): void {
-    console.log('on', name)
     if (this.listeners[name])
-      throw new Error(`消息处理器 ${String(name)} 已存在`)
+      throw new Error(`Handler for message ${String(name)} already exists`)
     this.listeners[name] = fn
   }
 
@@ -35,10 +34,10 @@ export class IPCMain<
     name: T,
     ...payload: Parameters<BackgroundMessageType[T]>
   ): Promise<void> {
-    // 获取所有打开的窗口
+    // Get all open windows
     const windows = BrowserWindow.getAllWindows()
 
-    // 向每个窗口发送消息
+    // Send message to each window
     windows.forEach((window) => {
       window.webContents.send(this.channel, {
         name,
@@ -58,14 +57,14 @@ export class IPCMain<
     try {
       // console.log("handleReceivingMessage", payload);
       if (this.listeners[payload.name]) {
-        const res = await this.listeners[payload.name](...payload.payload)
+        const res = await this.listeners[payload.name]!(event, ...payload.payload)
         return {
           type: 'success',
           result: res,
         }
       }
       else {
-        throw new Error(`未知的 IPC 消息 ${String(payload.name)}`)
+        throw new Error(`Unknown IPC message ${String(payload.name)}`)
       }
     }
     catch (e: any) {

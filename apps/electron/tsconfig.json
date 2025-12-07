@@ -14,6 +14,7 @@
       "vite/client"
     ],
     "strict": true,
+    "noImplicitAny": false,
     "sourceMap": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -22,7 +23,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "./types/**/*.d.ts"
+    "./types"
   ],
   "exclude": [
     "**/*.spec.ts",
