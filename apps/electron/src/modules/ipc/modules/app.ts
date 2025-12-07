@@ -1,48 +1,61 @@
-import type { IPCMainInstance } from '/@/modules/ipc/types'
 import type { Config } from 'electron'
 import { app, BrowserWindow, nativeTheme, shell } from 'electron'
+import type { IPCMainInstance } from '/@/modules/ipc/types'
 import { appConfig } from '/@/constants'
+import { getMainWindow } from '/@/modules/app/mainWindow'
 import { store } from '/@/modules/store'
 import { appUpdater } from '/@/modules/updater'
 import { webUpdater } from '/@/modules/updater/webUpdater'
 
 export function setupAppIpc(ipcMain: IPCMainInstance) {
-  /** 获取应用版本号 */
+  const offUpdaterListener = appUpdater.onStateChange((state) => {
+    void ipcMain.send('app:updateState', state)
+  })
+  app.once('before-quit', () => {
+    offUpdaterListener()
+  })
+
+  /** Get the current application version */
   ipcMain.on('app:getAppVersion', (event) => {
     return app.getVersion()
   })
 
-  /** 设置系统主题 */
+  /** Update the system theme */
   ipcMain.on('app:setSystemTheme', (event, theme) => {
     nativeTheme.themeSource = theme
   })
 
-  /** 保存软件设置 */
+  /** Persist user preferences */
   ipcMain.on('app:saveSoftConfig', (event, config) => {
-
+    Object.assign(store.store, config)
   })
 
-  /** 获取软件设置 */
+  /** Read user preferences */
   ipcMain.on('app:getSoftConfig', (event) => {
     return { ...store }
   })
 
-  /** APP 检查更新 */
+  /** Trigger an app update check */
   ipcMain.on('app:checkForUpdates', (event) => {
     return appUpdater.checkForUpdates()
   })
 
-  /** WEB 检查更新 */
+  /** Return the latest app update state */
+  ipcMain.on('app:getUpdateState', () => {
+    return appUpdater.getState()
+  })
+
+  /** Trigger a web bundle update check */
   ipcMain.on('app:checkWebForUpdates', (event) => {
     return webUpdater.checkForUpdates()
   })
 
-  /** 检查是否有更新 */
+  /** Report if an update is already available */
   ipcMain.on('app:hasUpdate', (event) => {
     return appUpdater.hasUpdate()
   })
 
-  /** 安装更新 */
+  /** Install the downloaded update */
   ipcMain.on('app:quitAndInstall', async (event, info) => {
     if (info.type === 'app') {
       appUpdater.upgradeNow()
@@ -51,28 +64,28 @@ export function setupAppIpc(ipcMain: IPCMainInstance) {
       await webUpdater.upgradeNow()
     }
   })
-  /** 显示系统日志所在目录 */
+  /** Reveal the log directory */
   ipcMain.on('app:showLogDir', (event) => {
     shell.openPath(appConfig.logsDir)
   })
-  /** 程序化显示和隐藏红绿灯 */
+  /** Toggle the macOS traffic lights */
   ipcMain.on('app:showHideTrafficLight', (event, show) => {
     getMainWindow()?.setWindowButtonVisibility?.(show)
   })
 
-  /** 当前 APP 窗口是否是主窗口 */
+  /** Check whether the sender belongs to the main window */
   ipcMain.on('app:isMainWindow', (event) => {
     return (
       getMainWindow()?.id === BrowserWindow.fromWebContents(event.sender)?.id
     )
   })
 
-  /** 显示当前网页所在的窗口 */
+  /** Bring the window hosting the current WebContents to front */
   ipcMain.on('app:showCurrentWebviewWindow', (event) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     win?.show()
   })
-  /** 获取系统 GPU 信息 */
+  /** Return the GPU feature summary */
   ipcMain.on('app:getGPUFeatureStatus', (event) => {
     return app.getGPUFeatureStatus()
   })

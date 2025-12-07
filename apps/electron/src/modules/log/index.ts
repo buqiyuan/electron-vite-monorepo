@@ -9,28 +9,28 @@ import { appConfig } from '/@/constants'
 import { appCliStartArgs, isPackaged } from '/@/constants/'
 
 export function setupLog() {
-  // 记录渲染进程的日志
+  // Capture renderer process logs through IPC
   // log.initialize()
   log.transports.console.format = `[{y}-{m}-{d} {h}:{i}:{s}] [{level}] {text}`
   log.transports.file.format = `[{y}-{m}-{d} {h}:{i}:{s}] [{level}][${app.getVersion()}] {text}`
   log.transports.console.useStyles = true
-  // 禁用生产环境的控制台输出
+  // Suppress console output in production
   if (isPackaged) {
     // log.transports.console.level = false
   }
-  // silly < debug < verbose < info < warn < error，文件只保留 info 及以上
+  // Log levels: silly < debug < verbose < info < warn < error. Files keep info and above.
   log.transports.file.level = appCliStartArgs['app-log-level'] as LevelOption
-  // 禁用同步写入
+  // Use async I/O for logging
   log.transports.file.sync = false
   /**
-   * 设置日志文件路径和文件名
+   * Resolve log file path and filename
    */
   log.transports.file.resolvePathFn = () => {
-    // 格式化当前时间为 YYYY-MM-DD 格式
+    // Format current timestamp as YYYY-MM-DD
     const formattedDate = format(Date.now(), 'yyyy-MM-dd')
     return join(appConfig.logsDir, `${formattedDate}.log`)
   }
-  // 限制文件大小，1 mb 之后会自动切割日志
+  // Limit file size; auto-rotate after 1 MB
   // log.transports.file.maxSize = 1 * 1024 * 1024
   // log.transports.file.archiveLogFn = (oldLogFile) => {
   //   const oldLogFilePath = oldLogFile.toString()
@@ -38,7 +38,7 @@ export function setupLog() {
 
   //   try {
   //     const maxCount = getMaxLogCount(info.dir, info.name)
-  //     // 重命名日志文件
+  //     // Rename log file
   //     renameSync(oldLogFilePath, join(info.dir, `${info.name}.old.${maxCount + 1}${info.ext}`))
   //   }
   //   catch (e) {
@@ -47,7 +47,7 @@ export function setupLog() {
   //   }
   // }
 
-  // 收集渲染进程中 console.log 写入的日志
+  // Collect renderer process console.log output into the log stream
   // log.initialize({ spyRendererConsole: true })
 
   Object.assign(console, log.functions)
@@ -56,7 +56,7 @@ export function setupLog() {
 }
 
 /**
- * 清理过期日志（保留 7 天）
+ * Clean up expired logs (keeps last 7 days)
  */
 async function cleanupOldLogs() {
   const logDir = appConfig.logsDir
@@ -70,7 +70,7 @@ async function cleanupOldLogs() {
       const stats = await stat(filePath)
       const fileAge = now - stats.mtimeMs
 
-      // 删除超过 7 天的日志
+      // Delete logs older than 7 days
       if (fileAge > 7 * 24 * 60 * 60 * 1000) {
         rm(filePath, { recursive: true, force: true })
           .then(() => {

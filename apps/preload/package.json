@@ -33,6 +33,7 @@
     "electron": "^35.1.4"
   },
   "devDependencies": {
+    "@repo/shared-types": "workspace:*",
     "vite-plugin-dts": "catalog:"
   }
 }

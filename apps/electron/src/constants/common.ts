@@ -1,18 +1,18 @@
 import { parseArgs } from 'node:util'
 import { app } from 'electron'
 
-/** 是否处于打包状态 */
+/** Whether the app is in packaged state */
 export const isPackaged = app.isPackaged
 
 export const appCliStartArgs = (() => {
   const options = {
-    /** 日志级别 */
+    /** Log level */
     'app-log-level': {
       type: 'string',
-      default: isPackaged ? 'info' : 'silly', // 默认 info
-      // default: 'info',  // 默认 info
+      default: isPackaged ? 'info' : 'silly', // Default: info
+      // default: 'info',  // Default: info
     },
-    /** 指定 APP 运行环境(dev, prod), 默认不指定, 则根据环境变量判断 */
+    /** Specify APP runtime environment (dev, prod). Default is empty, determined by env vars */
     'app-env': {
       type: 'string',
       default: '',
@@ -21,7 +21,7 @@ export const appCliStartArgs = (() => {
 
   const args = parseArgs({
     options,
-    strict: false, // 默认 true，遇到未知参数会报错
+    strict: false, // Default: true, throws on unknown options
   })
 
   if (import.meta.env.DEV) {
@@ -31,11 +31,11 @@ export const appCliStartArgs = (() => {
   return args.values
 })()
 
-/** 是否处于调试模式 */
+/** Whether in debug mode */
 export const isDebugMode = appCliStartArgs['app-log-level'] === 'debug'
-/** 是否处于开发环境 */
+/** Whether in development environment */
 export const isDev = appCliStartArgs['app-env'] ? appCliStartArgs['app-env'] === 'dev' : import.meta.env.DEV
-/** 是否处于生产环境 */
+/** Whether in production environment */
 export const isProd = appCliStartArgs['app-env'] ? appCliStartArgs['app-env'] === 'prod' : import.meta.env.PROD
 
 export const isMac = process.platform === 'darwin'

@@ -1,6 +1,5 @@
-import { join } from 'node:path'
 import { BrowserWindow } from 'electron'
-import { isDev, isLinux, isPackaged } from '/@/constants/'
+import { appConfig, isDev, isLinux } from '/@/constants/'
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -11,7 +10,7 @@ async function createWindow() {
       webviewTag: false,
       sandbox: !isLinux,
       spellcheck: false,
-      preload: isPackaged ? join(__dirname, './preload/index.cjs') : join(__dirname, '../../preload/dist/index.cjs'),
+      preload: appConfig.preloadFilePath,
     },
   })
 
@@ -26,29 +25,33 @@ async function createWindow() {
     }
   })
 
-  const pageUrl
-    = isDev && import.meta.env.VITE_DEV_SERVER_URL !== undefined
-      ? import.meta.env.VITE_DEV_SERVER_URL
-      : `file://${join(__dirname, './web/index.html')}`
-
-  await browserWindow.loadURL(pageUrl)
+  await browserWindow.loadURL(appConfig.webBaseURL)
 
   return browserWindow
 }
 
+let mainWindow: BrowserWindow | undefined
+
 /**
- * 恢复现有的浏览器窗口或创建新的浏览器窗口
+ * Restore an existing window or create a new one if necessary
  */
 export async function restoreOrCreateWindow() {
-  let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed())
-
-  if (window === undefined) {
-    window = await createWindow()
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    mainWindow = await createWindow()
   }
 
-  if (window.isMinimized()) {
-    window.restore()
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore()
   }
 
-  window.focus()
+  mainWindow.setSkipTaskbar(false)
+  mainWindow.setAlwaysOnTop(true)
+  mainWindow.show()
+  mainWindow.focus()
+  mainWindow.setAlwaysOnTop(false)
+}
+
+/** Get the main window instance */
+export function getMainWindow() {
+  return mainWindow
 }

@@ -29,7 +29,7 @@ export class IPCRenderer<
           return resolve(data.result)
         }
         else {
-          //  主进程如果返回错误的话，在这里显示到 UI 上
+          // If main process returns an error, display it in the UI
           console.log(data.error)
           return reject(data.error)
         }
@@ -47,7 +47,7 @@ export class IPCRenderer<
 
     this.listeners[name].push(fn)
 
-    //  提供删除方法
+    // Provide an unsubscribe method
     return () => {
       if (this.listeners[name]?.includes(fn)) {
         const index = this.listeners[name].indexOf(fn)

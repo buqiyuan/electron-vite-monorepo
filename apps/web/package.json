@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@repo/electron-preload": "workspace:*",
+    "@repo/shared-types": "workspace:*",
     "@vitejs/plugin-vue": "^6.0.2",
     "typescript": "catalog:",
     "unplugin-auto-import": "^20.3.0",

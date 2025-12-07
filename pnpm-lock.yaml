@@ -87,15 +87,24 @@ importers:
       '@repo/electron-preload':
         specifier: workspace:*
         version: link:../preload
+      '@repo/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@types/node':
         specifier: ^22.14.1
         version: 22.19.1
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       electron:
         specifier: 39.2.6
         version: 39.2.6
       electron-builder:
         specifier: 26.3.4
         version: 26.3.4(electron-builder-squirrel-windows@26.3.4)
+      electron-log:
+        specifier: ^5.4.3
+        version: 5.4.3
       electron-store:
         specifier: ^11.0.2
         version: 11.0.2
@@ -124,6 +133,9 @@ importers:
         specifier: ^35.1.4
         version: 35.7.5
     devDependencies:
+      '@repo/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       vite-plugin-dts:
         specifier: 'catalog:'
         version: 4.5.4(@types/node@22.19.1)(rollup@4.53.3)(typescript@5.9.3)(vite@7.2.6(@types/node@22.19.1)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
@@ -137,6 +149,9 @@ importers:
       '@repo/electron-preload':
         specifier: workspace:*
         version: link:../preload
+      '@repo/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@vitejs/plugin-vue':
         specifier: ^6.0.2
         version: 6.0.2(vite@7.2.6(@types/node@22.19.1)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
@@ -174,6 +189,12 @@ importers:
       vite-plugin-dts:
         specifier: 'catalog:'
         version: 4.5.4(@types/node@22.19.1)(rollup@4.53.3)(typescript@5.9.3)(vite@7.2.6(@types/node@22.19.1)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
+
+  packages/shared-types:
+    devDependencies:
+      electron-updater:
+        specifier: 6.6.2
+        version: 6.6.2
 
   packages/vite-plugin:
     dependencies:
@@ -2336,6 +2357,9 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+
   de-indent@1.0.2:
     resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}
 
@@ -2472,6 +2496,10 @@ packages:
     resolution: {integrity: sha512-LV4HhKLa67VS6tap/PVfrtgNiNEtY+C0A7BLbsHeMf9ro1SFQplNsXBK/0WjEVgVQT88rEDyEfkv+R5gceK3rw==}
     engines: {node: '>=14.0.0'}
     hasBin: true
+
+  electron-log@5.4.3:
+    resolution: {integrity: sha512-sOUsM3LjZdugatazSQ/XTyNcw8dfvH1SYhXWiJyfYodAAKOZdHs0txPiLDXFzOZbhXgAgshQkshH2ccq0feyLQ==}
+    engines: {node: '>= 14'}
 
   electron-publish@26.3.4:
     resolution: {integrity: sha512-5/ouDPb73SkKuay2EXisPG60LTFTMNHWo2WLrK5GDphnWK9UC+yzYrzVeydj078Yk4WUXi0+TaaZsNd6Zt5k/A==}
@@ -6152,7 +6180,7 @@ snapshots:
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -7399,6 +7427,8 @@ snapshots:
 
   csstype@3.2.3: {}
 
+  date-fns@4.1.0: {}
+
   de-indent@1.0.2: {}
 
   debounce-fn@6.0.0:
@@ -7552,6 +7582,8 @@ snapshots:
     transitivePeerDependencies:
       - electron-builder-squirrel-windows
       - supports-color
+
+  electron-log@5.4.3: {}
 
   electron-publish@26.3.4:
     dependencies:

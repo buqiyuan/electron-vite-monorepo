@@ -5,19 +5,25 @@ import { isPackaged } from './common'
 const sessionDir = app.getPath('sessionData')
 
 export const appConfig = {
-  /** 应用数据根目录 */
+  /** Application data root directory */
   sessionDir,
-  /** 系统语言 */
+  /** System locale */
   lang: app.getLocale(),
-  /** 临时文件目录 */
+  /** Temporary files directory */
   tempDir: join(sessionDir, 'temp'),
-  /** 应用日志目录 */
+  /** Application logs directory */
   logsDir: app.getPath('logs'),
-  /** 配置文件 */
+  /** Configuration file */
   configFile: join(sessionDir, 'config.json'),
-  /** 预加载文件路径 */
+  /** Preload script file path */
   get preloadFilePath() {
     return isPackaged ? join(import.meta.dirname, './preload/index.cjs') : join(import.meta.dirname, '../../preload/dist/index.cjs')
+  },
+  /** Web resource base URL */
+  get webBaseURL() {
+    return !isPackaged && import.meta.env.VITE_DEV_SERVER_URL !== undefined
+      ? import.meta.env.VITE_DEV_SERVER_URL
+      : `file://${join(__dirname, './web/index.html')}`
   },
 } as const
 

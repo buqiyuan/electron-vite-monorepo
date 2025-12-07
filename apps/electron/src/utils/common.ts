@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { userInfo } from 'node:os'
 
-/** 计算文件的 sha512 哈希值 */
+/** Calculate SHA512 hash of a file */
 export async function calculateFileHash(filePath: string) {
   const fileBuffer = await readFile(filePath)
   const hashSum = await createHash('sha512')
@@ -11,7 +11,7 @@ export async function calculateFileHash(filePath: string) {
   return hashSum.digest('hex')
 }
 
-// 获取系统用户名
+// Get system username
 export function getSystemUserName() {
   return userInfo().username
 }

@@ -11,15 +11,15 @@ const appName = isDev ? 'ElectronAppDev' : 'ElectronApp'
 const appId = isDev ? 'com.electron.app' : 'com.electron-dev.app'
 const shortcutName = isDev ? 'Electron App Dev' : 'Electron App'
 
-console.log('是否是测试环境：', isDev, appName)
-console.log('APP 版本号：', version)
+console.log('Development environment:', isDev, appName)
+console.log('APP version:', version)
 
 const workDir = path.join(import.meta.dirname, '../')
 
 const copySyncOptions: CopySyncOptions = {
   recursive: true,
   /**
-   * 过滤 source map 文件
+   * Filter out source map files
    */
   filter: src => !src.endsWith('.map') && !src.endsWith('.d.ts'),
 }
@@ -119,9 +119,9 @@ build({
   .then((result) => {
     console.log(JSON.stringify(result))
     const outDir = path.join(workDir, options.directories!.output!)
-    console.log('\x1B[32m', `打包完成🎉🎉🎉你要的都在 ${outDir} 目录里🤪🤪🤪`)
+    console.log('\x1B[32m', `Build complete! 🎉🎉🎉 Everything you need is in ${outDir}`)
   })
   .catch((error) => {
-    console.log('\x1B[31m', '打包失败，错误信息：', error)
+    console.log('\x1B[31m', 'Build failed with error:', error)
     exit(1)
   })
