@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron'
-import { appConfig, isDev, isLinux } from '/@/constants/'
+import { appConfig, isLinux, isPackaged } from '/@/constants/'
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -20,7 +20,7 @@ async function createWindow() {
   browserWindow.on('ready-to-show', () => {
     browserWindow?.show()
 
-    if (isDev) {
+    if (!isPackaged) {
       browserWindow?.webContents.openDevTools({ mode: 'detach' })
     }
   })
