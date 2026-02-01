@@ -1,9 +1,14 @@
+shellEmulator: true
+
+trustPolicy: no-downgrade
+
 packages:
   - 'apps/*'
   - 'packages/*'
 
 # Define a catalog of version ranges.
 catalog:
+  '@types/node': ^25.1.0
   axios: ^1.13.2
   typescript: ^5.9.3
   vite: ^7.2.6
