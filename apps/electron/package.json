@@ -36,15 +36,15 @@
     "@repo/shared-types": "workspace:*",
     "@types/node": "catalog:",
     "date-fns": "^4.1.0",
-    "electron": "40.1.0",
-    "electron-builder": "26.7.0",
+    "electron": "40.8.0",
+    "electron-builder": "26.8.1",
     "electron-log": "^5.4.3",
     "electron-store": "^11.0.2",
-    "electron-updater": "6.7.3",
-    "terser-webpack-plugin": "^5.3.16",
+    "electron-updater": "6.8.3",
+    "terser-webpack-plugin": "^5.3.17",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "webpack": "^5.104.1",
+    "webpack": "^5.105.4",
     "webpack-cli": "^6.0.1"
   }
 }

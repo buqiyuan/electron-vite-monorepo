@@ -30,7 +30,7 @@
     "postinstall": "pnpm run build"
   },
   "peerDependencies": {
-    "electron": "^40.1.0"
+    "electron": "^40.8.0"
   },
   "devDependencies": {
     "@repo/shared-types": "workspace:*",

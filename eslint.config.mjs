@@ -14,6 +14,7 @@ export default antfu(
       'no-console': 'off',
       'n/prefer-global/process': 'off',
       'pnpm/json-enforce-catalog': 'off',
+      'e18e/ban-dependencies': 'off',
       'unused-imports/no-unused-vars': [
         'error',
         {
